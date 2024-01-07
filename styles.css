@@ -26,6 +26,7 @@ body {
 
 .main-block {
     max-width: 840px;
+    margin: 0 auto;
 }
 
 .footer-bar {
