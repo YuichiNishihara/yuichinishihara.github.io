@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', function () {
     // Fetch data from the GitHub repository
-    fetch('https://raw.githubusercontent.com/yourusername/yourrepository/main/top10gdp.json')
+    fetch('https://raw.githubusercontent.com/YuichiNishihara/yuichinishihara.github.io/main/top10gdp.json')
         .then(response => response.json())
         .then(data => {
             // Process the data and create the graph
