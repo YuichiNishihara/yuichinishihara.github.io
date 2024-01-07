@@ -24,6 +24,10 @@ body {
     text-align: center;
 }
 
+.main-block {
+    margin: 0 auto;
+}
+
 header h1 {
     color: #fff; /* White text for better contrast */
 }
