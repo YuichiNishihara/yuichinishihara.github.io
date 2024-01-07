@@ -1,0 +1,128 @@
+[
+    {
+        "country": "United States",
+        "gdp": 10251,
+        "year": 2000
+    },
+    {
+        "country": "United States",
+        "gdp": 10582,
+        "year": 2001
+    },
+    {
+        "country": "United States",
+        "gdp": 10929,
+        "year": 2002
+    },
+    {
+        "country": "United States",
+        "gdp": 11456,
+        "year": 2003
+    },
+    {
+        "country": "United States",
+        "gdp": 12217,
+        "year": 2004
+    },
+    {
+        "country": "United States",
+        "gdp": 13039,
+        "year": 2005
+    },
+    {
+        "country": "United States",
+        "gdp": 13816,
+        "year": 2006
+    },
+    {
+        "country": "United States",
+        "gdp": 14474,
+        "year": 2007
+    },
+    {
+        "country": "United States",
+        "gdp": 14770,
+        "year": 2008
+    },
+    {
+        "country": "United States",
+        "gdp": 14478,
+        "year": 2009
+    },
+    {
+        "country": "United States",
+        "gdp": 15049,
+        "year": 2010
+    },
+    {
+        "country": "United States",
+        "gdp": 15600,
+        "year": 2011
+    },
+    {
+        "country": "United States",
+        "gdp": 16254,
+        "year": 2012
+    },
+    {
+        "country": "United States",
+        "gdp": 16843,
+        "year": 2013
+    },
+    {
+        "country": "United States",
+        "gdp": 17551,
+        "year": 2014
+    },
+    {
+        "country": "United States",
+        "gdp": 18206,
+        "year": 2015
+    },
+    {
+        "country": "Brazil",
+        "gdp": 655,
+        "year": 2000
+    },
+    {
+        "country": "Canada",
+        "gdp": 745,
+        "year": 2000
+    },
+    {
+        "country": "China",
+        "gdp": 1211,
+        "year": 2000
+    },
+    {
+        "country": "France",
+        "gdp": 1366,
+        "year": 2000
+    },
+    {
+        "country": "Germany",
+        "gdp": 1948,
+        "year": 2000
+    },
+    {
+        "country": "India",
+        "gdp": 468,
+        "year": 2000
+    },
+    {
+        "country": "Italy",
+        "gdp": 1147,
+        "year": 2000
+    },
+    {
+        "country": "Japan",
+        "gdp": 4968,
+        "year": 2000
+    },
+
+    {
+        "country": "United Kingdom",
+        "gdp": 1666,
+        "year": 2000
+    }
+]
