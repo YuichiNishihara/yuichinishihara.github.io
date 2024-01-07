@@ -3,16 +3,16 @@ document.addEventListener('DOMContentLoaded', function () {
     const countries = ['USA', 'China', 'Japan', 'Germany', 'India', 'UK', 'France', 'Brazil', 'Italy', 'Canada'];
     const years = [2000, 2005, 2010, 2015, 2020];
     const gdpData = {
-        'USA': [10, 12, 14, 17, 21],
-        'China': [4, 9, 15, 22, 28],
-        'Japan': [5, 4, 5, 6, 6],
-        'Germany': [3, 3, 3.5, 4, 4.5],
-        'India': [1, 2, 3, 8, 10],
-        'UK': [2, 2.5, 2.7, 2.8, 2.9],
-        'France': [2, 2, 2, 2, 2],
-        'Brazil': [1, 1.5, 2, 2.5, 2.8],
-        'Italy': [2, 2, 1.8, 1.9, 2],
-        'Canada': [1, 1.5, 1.8, 1.9, 2]
+        'USA': [10, 13, 15, 18, 25],
+        'China': [1.2, 2.3, 4.6, 11, 18],
+        'Japan': [5.0, 4.8, 5.8, 4.4, 4.2],
+        'Germany': [1.9, 2.8, 3.4, 3.4, 4.1],
+        'India': [0.4, 0.8, 1.7, 2.1, 3.4],
+        'UK': [1.7, 2.5, 2.5, 2.9, 3.1],
+        'France': [1.4, 2.2, 2.6, 2.4, 2.8],
+        'Brazil': [0.6, 0.9, 2.2, 1.8, 1.9],
+        'Italy': [1.1, 1.9, 2.1, 1.8, 2],
+        'Canada': [0.7, 1.2, 1.6, 1.6, 2.1]
     };
 
     // Prepare data for the chart
