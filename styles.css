@@ -24,6 +24,12 @@ body {
     text-align: center;
 }
 
+.main-block {
+    max-width: 800px;
+    padding: 10px 0;
+    text-align: center;
+}
+
 header h1 {
     color: #fff; /* White text for better contrast */
 }
