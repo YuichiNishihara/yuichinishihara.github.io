@@ -24,6 +24,11 @@ body {
     text-align: center;
 }
 
+.footer-bar {
+    padding: 10px 0;
+    text-align: center;
+}
+
 header h1 {
     color: #fff; /* White text for better contrast */
 }
