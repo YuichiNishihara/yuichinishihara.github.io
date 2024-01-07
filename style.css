@@ -1,0 +1,41 @@
+/* Reset some default styles */
+body, h1, h2, p, ul, li {
+    margin: 0;
+    padding: 0;
+}
+
+/* Apply a modern and responsive design */
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f8f8f8;
+    color: #333;
+}
+
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+header, main, footer {
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+    overflow: hidden;
+}
+
+header h1 {
+    color: #2c3e50;
+}
+
+section {
+    margin-top: 20px;
+}
+
+footer p {
+    text-align: center;
+    color: #888;
+}
+
+/* Add more styles as needed */
