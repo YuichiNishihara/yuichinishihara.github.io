@@ -119,10 +119,39 @@
         "gdp": 4968,
         "year": 2000
     },
-
     {
         "country": "United Kingdom",
         "gdp": 1666,
         "year": 2000
-    }
+    },
+    {
+        "country": "Japan",
+        "gdp": 4831,
+        "year": 2005
+    },
+    {
+        "country": "China",
+        "gdp": 2286,
+        "year": 2005
+    },
+    {
+        "country": "Japan",
+        "gdp": 5759,
+        "year": 2010
+    },
+    {
+        "country": "China",
+        "gdp": 6087,
+        "year": 2010
+    },
+    {
+        "country": "Japan",
+        "gdp": 4445,
+        "year": 2015
+    },
+    {
+        "country": "China",
+        "gdp": 11062,
+        "year": 2015
+    }    
 ]
