@@ -42,7 +42,7 @@ document.addEventListener('DOMContentLoaded', function () {
             data: {
                 labels: uniqueYears,
                 datasets: Object.values(countryData).map(country => ({
-                    label: country.label,
+                    label: country.label,  // Set the label for each dataset
                     data: country.data,
                     fill: false,
                 })),
