@@ -238,5 +238,85 @@
     "country": "China",
     "year": 2015,
     "gdp": 11061.5726185948
+  },
+  {
+    "country": "Germany",
+    "year": 2000,
+    "gdp": 1947.98199101177
+  },
+  {
+    "country": "Germany",
+    "year": 2001,
+    "gdp": 1945.7909738031499
+  },
+  {
+    "country": "Germany",
+    "year": 2002,
+    "gdp": 2078.48451747451
+  },
+  {
+    "country": "Germany",
+    "year": 2003,
+    "gdp": 2501.6403884823503
+  },
+  {
+    "country": "Germany",
+    "year": 2004,
+    "gdp": 2814.35386935908
+  },
+  {
+    "country": "Germany",
+    "year": 2005,
+    "gdp": 2846.8642111751
+  },
+  {
+    "country": "Germany",
+    "year": 2006,
+    "gdp": 2994.70364202353
+  },
+  {
+    "country": "Germany",
+    "year": 2007,
+    "gdp": 3425.57838292158
+  },
+  {
+    "country": "Germany",
+    "year": 2008,
+    "gdp": 3745.26409361719
+  },
+  {
+    "country": "Germany",
+    "year": 2009,
+    "gdp": 3411.26121265234
+  },
+  {
+    "country": "Germany",
+    "year": 2010,
+    "gdp": 3399.6678200000097
+  },
+  {
+    "country": "Germany",
+    "year": 2011,
+    "gdp": 3749.31499105059
+  },
+  {
+    "country": "Germany",
+    "year": 2012,
+    "gdp": 3527.14318878516
+  },
+  {
+    "country": "Germany",
+    "year": 2013,
+    "gdp": 3733.80464954903
+  },
+  {
+    "country": "Germany",
+    "year": 2014,
+    "gdp": 3889.09305102352
+  },
+  {
+    "country": "Germany",
+    "year": 2015,
+    "gdp": 3357.58571935156
   }
 ]
