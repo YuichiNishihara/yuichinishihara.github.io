@@ -1,0 +1,242 @@
+[
+  {
+    "country": "United States",
+    "year": 2000,
+    "gdp": 10250.947997
+  },
+  {
+    "country": "United States",
+    "year": 2001,
+    "gdp": 10581.929774
+  },
+  {
+    "country": "United States",
+    "year": 2002,
+    "gdp": 10929.112955
+  },
+  {
+    "country": "United States",
+    "year": 2003,
+    "gdp": 11456.442041
+  },
+  {
+    "country": "United States",
+    "year": 2004,
+    "gdp": 12217.193198
+  },
+  {
+    "country": "United States",
+    "year": 2005,
+    "gdp": 13039.199193
+  },
+  {
+    "country": "United States",
+    "year": 2006,
+    "gdp": 13815.586948
+  },
+  {
+    "country": "United States",
+    "year": 2007,
+    "gdp": 14474.226905
+  },
+  {
+    "country": "United States",
+    "year": 2008,
+    "gdp": 14769.857911
+  },
+  {
+    "country": "United States",
+    "year": 2009,
+    "gdp": 14478.064934
+  },
+  {
+    "country": "United States",
+    "year": 2010,
+    "gdp": 15048.964444
+  },
+  {
+    "country": "United States",
+    "year": 2011,
+    "gdp": 15599.728123
+  },
+  {
+    "country": "United States",
+    "year": 2012,
+    "gdp": 16253.97223
+  },
+  {
+    "country": "United States",
+    "year": 2013,
+    "gdp": 16843.190993
+  },
+  {
+    "country": "United States",
+    "year": 2014,
+    "gdp": 17550.680174
+  },
+  {
+    "country": "United States",
+    "year": 2015,
+    "gdp": 18206.020741
+  },
+  {
+    "country": "Japan",
+    "year": 2000,
+    "gdp": 4968.35907595659
+  },
+  {
+    "country": "Japan",
+    "year": 2001,
+    "gdp": 4374.71169409087
+  },
+  {
+    "country": "Japan",
+    "year": 2002,
+    "gdp": 4182.84604587361
+  },
+  {
+    "country": "Japan",
+    "year": 2003,
+    "gdp": 4519.5616452535305
+  },
+  {
+    "country": "Japan",
+    "year": 2004,
+    "gdp": 4893.1160056565595
+  },
+  {
+    "country": "Japan",
+    "year": 2005,
+    "gdp": 4831.4670353898
+  },
+  {
+    "country": "Japan",
+    "year": 2006,
+    "gdp": 4601.66312264992
+  },
+  {
+    "country": "Japan",
+    "year": 2007,
+    "gdp": 4579.75092035481
+  },
+  {
+    "country": "Japan",
+    "year": 2008,
+    "gdp": 5106.6791151273
+  },
+  {
+    "country": "Japan",
+    "year": 2009,
+    "gdp": 5289.493117993889
+  },
+  {
+    "country": "Japan",
+    "year": 2010,
+    "gdp": 5759.0717690131105
+  },
+  {
+    "country": "Japan",
+    "year": 2011,
+    "gdp": 6233.14717234135
+  },
+  {
+    "country": "Japan",
+    "year": 2012,
+    "gdp": 6272.36299610503
+  },
+  {
+    "country": "Japan",
+    "year": 2013,
+    "gdp": 5212.32818116618
+  },
+  {
+    "country": "Japan",
+    "year": 2014,
+    "gdp": 4896.99440535329
+  },
+  {
+    "country": "Japan",
+    "year": 2015,
+    "gdp": 4444.93065196418
+  },
+  {
+    "country": "China",
+    "year": 2000,
+    "gdp": 1211.33165182985
+  },
+  {
+    "country": "China",
+    "year": 2001,
+    "gdp": 1339.40089715344
+  },
+  {
+    "country": "China",
+    "year": 2002,
+    "gdp": 1470.5576548241102
+  },
+  {
+    "country": "China",
+    "year": 2003,
+    "gdp": 1660.28054387095
+  },
+  {
+    "country": "China",
+    "year": 2004,
+    "gdp": 1955.34676875764
+  },
+  {
+    "country": "China",
+    "year": 2005,
+    "gdp": 2285.96114990426
+  },
+  {
+    "country": "China",
+    "year": 2006,
+    "gdp": 2752.11865722164
+  },
+  {
+    "country": "China",
+    "year": 2007,
+    "gdp": 3550.3278030246897
+  },
+  {
+    "country": "China",
+    "year": 2008,
+    "gdp": 4594.33678575206
+  },
+  {
+    "country": "China",
+    "year": 2009,
+    "gdp": 5101.69112435841
+  },
+  {
+    "country": "China",
+    "year": 2010,
+    "gdp": 6087.19174673857
+  },
+  {
+    "country": "China",
+    "year": 2011,
+    "gdp": 7551.54570351814
+  },
+  {
+    "country": "China",
+    "year": 2012,
+    "gdp": 8532.18538169643
+  },
+  {
+    "country": "China",
+    "year": 2013,
+    "gdp": 9570.47111184782
+  },
+  {
+    "country": "China",
+    "year": 2014,
+    "gdp": 10475.624944290099
+  },
+  {
+    "country": "China",
+    "year": 2015,
+    "gdp": 11061.5726185948
+  }
+]
