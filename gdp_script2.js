@@ -11,26 +11,26 @@ document.addEventListener('DOMContentLoaded', function () {
     // Function to create the line graph using Chart.js
     function createLineGraph(data) {
         // Extract unique years from the data
-        const uniqueYears = Array.from(new Set(data.map(country => country.year)));
+        const uniqueYears = Array.from(new Set(data.map(item => item.year)));
 
         // Prepare data for each country
-        const countryData = data.reduce((acc, country) => {
-            if (!acc[country.name]) {
-                acc[country.name] = { label: country.name, data: [] };
+        const countryData = data.reduce((acc, item) => {
+            if (!acc[item.country]) {
+                acc[item.country] = { label: item.country, data: [] };
             }
-            acc[country.name].data.push({ x: country.year, y: country.gdp });
+            acc[item.country].data.push({ x: item.year, y: item.gdp });
             return acc;
         }, {});
 
         // Fill in missing data points with null
-        Object.values(countryData).forEach(country => {
+        Object.values(countryData).forEach(item => {
             for (const year of uniqueYears) {
-                if (!country.data.some(dataPoint => dataPoint.x === year)) {
-                    country.data.push({ x: year, y: null });
+                if (!item.data.some(dataPoint => dataPoint.x === year)) {
+                    item.data.push({ x: year, y: null });
                 }
             }
             // Sort the data points by year
-            country.data.sort((a, b) => a.x - b.x);
+            item.data.sort((a, b) => a.x - b.x);
         });
 
         // Get the canvas element
@@ -41,9 +41,9 @@ document.addEventListener('DOMContentLoaded', function () {
             type: 'line',
             data: {
                 labels: uniqueYears,
-                datasets: Object.values(countryData).map(country => ({
-                    label: country.label,  // Set the label for each dataset
-                    data: country.data,
+                datasets: Object.values(countryData).map(item => ({
+                    label: item.label,  // Set the label for each dataset
+                    data: item.data,
                     fill: false,
                 })),
             },
