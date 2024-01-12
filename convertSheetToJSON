@@ -1,0 +1,27 @@
+function convertSheetToJSON() {
+  var spreadsheet = SpreadsheetApp.getActiveSpreadsheet();
+  var sheet = spreadsheet.getSheetByName("GDP"); // Replace "Sheet1" with your sheet name
+
+  var data = sheet.getDataRange().getValues();
+  var headers = data[0];
+  var jsonData = [];
+
+  for (var i = 1; i < data.length; i++) {
+    var row = data[i];
+
+    for (var j = 1; j < headers.length; j++) {
+      var entry = {};
+      entry["country"] = row[0];
+      entry["year"] = headers[j];
+      entry["gdp"] = row[j];
+      jsonData.push(entry);
+    }
+
+  }
+
+  var jsonString = JSON.stringify(jsonData, null, 2);
+
+  // Save the JSON to a file
+  var folder = DriveApp.getRootFolder(); // You can change this to your desired folder
+  var file = folder.createFile("output.json", jsonString);
+}
