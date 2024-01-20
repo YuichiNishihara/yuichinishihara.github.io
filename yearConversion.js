@@ -1,4 +1,6 @@
 // JavaScript code from the previous response (convertYear function) goes here
+console.log("JavaScript loaded")
+
 function convertYear(year, toJapanese) {
   // Check for valid year input
   if (isNaN(year) || year < 1) {
@@ -25,6 +27,7 @@ function convertYear(year, toJapanese) {
 // Event listeners for buttons
 document.getElementById("convertToJapanese").addEventListener("click", function() {
   const year = document.getElementById("year").value;
+  const era = document.getElementById("era").value;
   const convertedYear = convertYear(year, true); // Convert to Japanese
   document.getElementById("result").textContent = "Japanese year: " + convertedYear;
 });
