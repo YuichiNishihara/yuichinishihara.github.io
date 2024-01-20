@@ -38,8 +38,7 @@
                 <option value="reiwa">令和</option>
             </select>
             <input type="number" id="year">
-            <button id="convertToJapanese">Convert to Japanese Year</button>
-            <button id="convertToWestern">Convert to Western Year</button>
+            <button id="convert">Convert</button>
             
             <br>
 
@@ -47,17 +46,11 @@
         </div>
         <script>
             // Event listeners for buttons
-            document.getElementById("convertToJapanese").addEventListener("click", function() {
-              const year = document.getElementById("year").value;
+            document.getElementById("convert").addEventListener("click", function() {
               const era = document.getElementById("era").value;
-              const convertedYear = convertYear(year, true); // Convert to Japanese
-              document.getElementById("result").textContent = "Japanese year: " + convertedYear;
-            });
-            
-            document.getElementById("convertToWestern").addEventListener("click", function() {
               const year = document.getElementById("year").value;
-              const convertedYear = convertYear(year, false); // Convert to Western
-              document.getElementById("result").textContent = "Western year: " + convertedYear;
+              const convertedYear = convertYear(year, era); // Convert to Japanese
+              document.getElementById("result").textContent = convertedYear;
             });
         </script>
         <!-- Add more sections as needed -->
