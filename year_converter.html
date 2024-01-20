@@ -49,7 +49,7 @@
             document.getElementById("convert").addEventListener("click", function() {
               const era = document.getElementById("era").value;
               const year = document.getElementById("year").value;
-              const convertYear(year, era); // Convert based on era chosen
+              const convertedYear = convertYear(year, era); // Convert based on era chosen
               document.getElementById("result").textContent = convertedYear;
             });
         </script>
