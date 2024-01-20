@@ -1,6 +1,4 @@
 // JavaScript code from the previous response (convertYear function) goes here
-console.log("JavaScript loaded")
-
 function convertYear(year, toJapanese) {
   // Check for valid year input
   if (isNaN(year) || year < 1) {
