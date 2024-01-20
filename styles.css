@@ -35,6 +35,12 @@ body {
     margin-top: 20px;
 }
 
+.button {
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px; /* Change this value for desired roundness */
+    cursor: pointer;
+}
 
 header h1 {
     color: #fff; /* White text for better contrast */
