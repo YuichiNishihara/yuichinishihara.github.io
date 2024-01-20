@@ -22,15 +22,15 @@ function convertYear(year, era) {
     }
   } else if (era == "showa") {
     // Convert Showa to Western year
-    const convertedYear = +year + +1926;
+    const convertedYear = +year + +1925;
     return "西暦" + convertedYear + "年";
   } else if (era == "heisei") {
     // Convert Heisei to Western year
-    const convertedYear = +year + +1989;
+    const convertedYear = +year + +1988;
     return "西暦" + convertedYear + "年";
   } else if (era == "reiwa") {
     // Reiwa to Western year
-    const convertedYear = +year + +2019;
+    const convertedYear = +year + +2018;
     return "西暦" + convertedYear + "年";
   }
 }
