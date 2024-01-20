@@ -30,17 +30,20 @@
             </section>
         </div>
         <div class="container">
-          <label for="year">Enter a year:</label>
-          <input type="number" id="year">
-      
-          <br>
-      
-          <button id="convertToJapanese">Convert to Japanese Year</button>
-          <button id="convertToWestern">Convert to Western Year</button>
-      
-          <br>
-      
-          <p id="result"></p>
+            <label for="year">Enter a year:</label>
+            <select id="era">
+                <option value="western">西暦</option>
+                <option value="showa">昭和</option>
+                <option value="heisei">平成</option>
+                <option value="reiwa">令和</option>
+            </select>
+            <input type="number" id="year">
+            <button id="convertToJapanese">Convert to Japanese Year</button>
+            <button id="convertToWestern">Convert to Western Year</button>
+            
+            <br>
+
+            <p id="result"></p>
         </div>
         <!-- Add more sections as needed -->
     </main>
