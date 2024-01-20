@@ -23,17 +23,3 @@ function convertYear(year, toJapanese) {
     return westernYear;
   }
 }
-
-// Event listeners for buttons
-document.getElementById("convertToJapanese").addEventListener("click", function() {
-  const year = document.getElementById("year").value;
-  const era = document.getElementById("era").value;
-  const convertedYear = convertYear(year, true); // Convert to Japanese
-  document.getElementById("result").textContent = "Japanese year: " + convertedYear;
-});
-
-document.getElementById("convertToWestern").addEventListener("click", function() {
-  const year = document.getElementById("year").value;
-  const convertedYear = convertYear(year, false); // Convert to Western
-  document.getElementById("result").textContent = "Western year: " + convertedYear;
-});
