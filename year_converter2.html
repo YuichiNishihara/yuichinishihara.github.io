@@ -6,6 +6,8 @@
     <title>Yuichi's GitHub Page</title>
     <link rel="stylesheet" href="styles.css">
     <!-- Add any additional meta tags, stylesheets, or scripts here -->
+    <!-- Include the AWS SDK for JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/aws-sdk/2.1049.0/aws-sdk.min.js"></script>
 </head>
 
 <body>
@@ -47,12 +49,37 @@
         <script>
             // Event listeners for buttons
             document.getElementById("convert").addEventListener("click", function() {
-              const apiEndpoint = 'https://w6lvchjaqg.execute-api.ap-southeast-1.amazonaws.com/prod/JapaneseYearConverter';
+              // Get the user input
               const era = document.getElementById("era").value;
               const year = document.getElementById("year").value;
-              const urlWithParameters = `${apiEndpoint}?era=${era}&year=${year}`;
+              // Set up access to AWS API
+              const apiEndpoint = 'https://w6lvchjaqg.execute-api.ap-southeast-1.amazonaws.com/prod/JapaneseYearConverter';
+              const region = 'ap-southeast-1';
+              const serviceName = 'execute-api';
+              // Get the current date in ISO format
+              const currentDate = new Date().toISOString().replace(/[:\-]|\.\d{3}/g, '');
+              // Create the headers for the AWS Signature Version 4
+              const headers = {
+                'Host': `${apiEndpoint.split('//')[1]}`,
+                'X-Amz-Date': currentDate,
+              };              
+              // Use the AWS SDK to sign the headers
+              AWS.config.update({ region: region });
+              const signer = new AWS.Signers.V4({ region: region, service: serviceName });
+              const request = new AWS.HttpRequest();
+              request.method = 'GET';
+              request.headers = headers;
+              request.path = '/prod/JapaneseYearConverter?era=${era}&year=${year}';  // Replace with your actual API path
+              signer.sign(request, AWS.config.credentials);
+              
+              // const urlWithParameters = `${apiEndpoint}?era=${era}&year=${year}`;
 
-              fetch(urlWithParameters)
+              // Perform the fetch with the signed headers
+              fetch(apiEndpoint, {
+                method: 'GET',
+                headers: request.headers,
+              })  
+              // fetch(urlWithParameters)
                 .then(response => {
                   if (!response.ok) {
                     throw new Error(`HTTP error! Status: ${response.status}`);
@@ -85,3 +112,79 @@
 
 </body>
 </html>
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GitHub Pages Frontend</title>
+</head>
+<body>
+
+<!-- Your content here -->
+
+<button id="callApiButton">Call API</button>
+
+<!-- Display area for the extracted year -->
+<div id="extractedYear"></div>
+
+<script>
+document.getElementById('callApiButton').addEventListener('click', () => {
+    // Replace with your actual values
+    const apiEndpoint = 'https://your-api-id.execute-api.your-region.amazonaws.com/prod';
+    const region = 'your-region';
+    const serviceName = 'execute-api';
+
+    // Get the current date in ISO format
+    const currentDate = new Date().toISOString().replace(/[:\-]|\.\d{3}/g, '');
+
+    // Create the headers for the AWS Signature Version 4
+    const headers = {
+        'Host': `${apiEndpoint.split('//')[1]}`,
+        'X-Amz-Date': currentDate,
+    };
+
+    // Use the AWS SDK to sign the headers
+    AWS.config.update({ region: region });
+    const signer = new AWS.Signers.V4({ region: region, service: serviceName });
+    const request = new AWS.HttpRequest();
+    request.method = 'GET';
+    request.headers = headers;
+    request.path = '/prod';  // Replace with your actual API path
+
+    signer.sign(request, AWS.config.credentials);
+
+    // Perform the fetch with the signed headers
+    fetch(apiEndpoint, {
+        method: 'GET',
+        headers: request.headers,
+    })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            // Extract the year from the API response
+            const extractedYear = data.converted_year;
+
+            // Display the extracted year in the designated div
+            document.getElementById('extractedYear').innerText = `Extracted Year: ${extractedYear}`;
+        })
+        .catch(error => {
+            console.error('API Error:', error);
+            alert('API Error: ' + error.message);
+        });
+});
+</script>
+
+<!-- Include the AWS SDK -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/aws-sdk/2.1049.0/aws-sdk.min.js"></script>
+
+</body>
+</html>
+
