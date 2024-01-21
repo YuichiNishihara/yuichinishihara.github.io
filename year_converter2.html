@@ -47,7 +47,8 @@
         <script>
             // Event listeners for buttons
             document.getElementById("convert").addEventListener("click", function() {
-              const apiEndpoint = 'https://w6lvchjaqg.execute-api.ap-southeast-1.amazonaws.com/prod/JapaneseYearConverter';
+              //const apiEndpoint = 'https://w6lvchjaqg.execute-api.ap-southeast-1.amazonaws.com/prod/JapaneseYearConverter';
+              const apiEndpoint = 'https://w946sa1cyc.execute-api.us-east-2.amazonaws.com/yearConverter';
               const era = document.getElementById("era").value;
               const year = document.getElementById("year").value;
               const urlWithParameters = `${apiEndpoint}?era=${era}&year=${year}`;
