@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Williamsburg Weather</title>
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-blue-100 to-indigo-200 min-h-screen p-4 md:p-8 text-slate-800">
+
+<div id="root"></div>
+
+<script type="text/babel">
+
+    const { useState, useEffect } = React;
+
+    // Mapping WMO weather codes to descriptions and Lucide icon names
+    const getWeatherInfo = (code) => {
+        const codes = {
+            0: { label: 'Clear Sky', icon: 'Sun', color: 'text-yellow-500' },
+            1: { label: 'Mainly Clear', icon: 'Sun', color: 'text-yellow-400' },
+            2: { label: 'Partly Cloudy', icon: 'CloudSun', color: 'text-orange-400' },
+            3: { label: 'Overcast', icon: 'Cloud', color: 'text-gray-500' },
+            45: { label: 'Fog', icon: 'CloudFog', color: 'text-gray-400' },
+            48: { label: 'Depositing Rime Fog', icon: 'CloudFog', color: 'text-gray-400' },
+            51: { label: 'Light Drizzle', icon: 'CloudDrizzle', color: 'text-blue-400' },
+            53: { label: 'Moderate Drizzle', icon: 'CloudDrizzle', color: 'text-blue-500' },
+            55: { label: 'Dense Drizzle', icon: 'CloudDrizzle', color: 'text-blue-600' },
+            56: { label: 'Freezing Drizzle', icon: 'CloudSnow', color: 'text-cyan-500' },
+            57: { label: 'Dense Freezing Drizzle', icon: 'CloudSnow', color: 'text-cyan-600' },
+            61: { label: 'Slight Rain', icon: 'CloudRain', color: 'text-blue-500' },
+            63: { label: 'Moderate Rain', icon: 'CloudRain', color: 'text-blue-600' },
+            65: { label: 'Heavy Rain', icon: 'CloudRain', color: 'text-blue-700' },
+            66: { label: 'Freezing Rain', icon: 'CloudSnow', color: 'text-cyan-500' },
+            67: { label: 'Heavy Freezing Rain', icon: 'CloudSnow', color: 'text-cyan-600' },
+            71: { label: 'Slight Snow', icon: 'Snowflake', color: 'text-sky-300' },
+            73: { label: 'Moderate Snow', icon: 'Snowflake', color: 'text-sky-400' },
+            75: { label: 'Heavy Snow', icon: 'Snowflake', color: 'text-sky-500' },
+            77: { label: 'Snow Grains', icon: 'Snowflake', color: 'text-sky-300' },
+            80: { label: 'Slight Rain Showers', icon: 'CloudRain', color: 'text-blue-500' },
+            81: { label: 'Moderate Rain Showers', icon: 'CloudRain', color: 'text-blue-600' },
+            82: { label: 'Violent Rain Showers', icon: 'CloudRain', color: 'text-blue-700' },
+            85: { label: 'Slight Snow Showers', icon: 'Snowflake', color: 'text-sky-400' },
+            86: { label: 'Heavy Snow Showers', icon: 'Snowflake', color: 'text-sky-500' },
+            95: { label: 'Thunderstorm', icon: 'CloudLightning', color: 'text-yellow-600' },
+            96: { label: 'Thunderstorm & Hail', icon: 'CloudLightning', color: 'text-red-500' },
+            99: { label: 'Heavy Hail Thunderstorm', icon: 'CloudLightning', color: 'text-red-600' },
+        };
+        return codes[code] || { label: 'Unknown', icon: 'HelpCircle', color: 'text-gray-400' };
+    };
+
+    // Simple internal SVG map to ensure icons render perfectly without dependency issues
+    const LegacyIcon = ({ name, className, size }) => {
+        const icons = {
+            Sun: <><circle cx="12" cy="12" r="4" /><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41-1.41"/><path d="m19.07 4.93-1.41 1.41"/></>,
+            Cloud: <path d="M17.5 19c0-1.7-1.3-3-3-3h-11C1.6 16 0 14.4 0 12.5c0-1.9 1.6-3.5 3.5-3.5A3.5 3.5 0 0 1 7 5.5c0-.6.4-1 .9-1.2.5-.2 1.1 0 1.4.5l.3.4c.2.4.6.6 1 .6 1.9 0 3.5 1.6 3.5 3.5 0 .5-.1 1-.3 1.4l-.2.5h3.9Z" transform="translate(2,2) scale(0.9)"/>, 
+            CloudSun: <><path d="M12 2v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="M20 12h2"/><path d="m19.07 4.93-1.41 1.41"/><path d="M15.977 13.545A5.98 5.98 0 0 1 11 8H8c-2.21 0-4 1.79-4 4s1.79 4 4 4h9.5c1.38 0 2.5-1.12 2.5-2.5S18.88 11 17.5 11h-.75"/><circle cx="12" cy="12" r="4" opacity="0.3"/></>, 
+            CloudFog: <><path d="M4 15h16"/><path d="M4 20h16"/><path d="M6 10h12"/><path d="M16 10a4 4 0 0 0-8 0"/></>,
+            CloudDrizzle: <><path d="M20 16.2A4.5 4.5 0 0 0 21.4 8A5.5 5.5 0 0 0 8 7.3 5 5 0 0 0 6 17"/><path d="M8 19v2"/><path d="M8 13v2"/><path d="M16 19v2"/><path d="M16 13v2"/><path d="M12 21v2"/><path d="M12 15v2"/></>,
+            CloudRain: <><path d="M20 16.2A4.5 4.5 0 0 0 21.4 8A5.5 5.5 0 0 0 8 7.3 5 5 0 0 0 6 17"/><path d="M16 13v8"/><path d="M8 13v8"/><path d="M12 15v8"/></>,
+            Snowflake: <><line x1="2" x2="22" y1="12" y2="12"/><line x1="12" x2="12" y1="2" y2="22"/><path d="m20 20-4-4"/><path d="m4 4 4 4"/><path d="m4 20 4-4"/><path d="m20 4-4 4"/></>,
+            CloudLightning: <><path d="M6 16.326A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 .5 8.973"/><path d="m13 12-3 5h4l-3 5"/></>,
+            Wind: <><path d="M17.7 7.7a2.5 2.5 0 1 1 1.8 4.3H2"/><path d="M9.6 4.6A2 2 0 1 1 11 8H2"/><path d="M12.6 19.4A2 2 0 1 0 14 16H2"/></>,
+            Droplets: <><path d="M7 16.3c2.2 0 4-1.83 4-4.05 0-1.16-.57-2.26-1.71-3.19S7.29 6.75 7 5.3c-.29 1.45-1.14 2.84-2.29 3.76S3 11.1 3 12.25c0 2.22 1.8 4.05 4 4.05z"/><path d="M12.56 6.6A10.97 10.97 0 0 0 14 3.02c.5 2.5 2 4.9 4 6.5s3 3.5 3 5.5a6.98 6.98 0 0 1-11.91 4.97"/></>,
+            Thermometer: <path d="M14 14.76V3.5a2.5 2.5 0 0 0-5 0v11.26a4.5 4.5 0 1 0 5 0z"/>,
+            MapPin: <><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></>,
+            HelpCircle: <><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></>
+        };
+
+        const svgs = {
+            Sun: <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">{icons.Sun}</svg>,
+            Cloud: <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">{icons.Cloud}</svg>,
+            CloudSun: <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">{icons.CloudSun}</svg>,
+            CloudFog: <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">{icons.CloudFog}</svg>,
+            CloudDrizzle: <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">{icons.CloudDrizzle}</svg>,
+            CloudRain: <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">{icons.CloudRain}</svg>,
+            Snowflake: <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">{icons.Snowflake}</svg>,
+            CloudLightning: <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">{icons.CloudLightning}</svg>,
+            Wind: <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">{icons.Wind}</svg>,
+            Droplets: <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">{icons.Droplets}</svg>,
+            Thermometer: <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">{icons.Thermometer}</svg>,
+            MapPin: <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">{icons.MapPin}</svg>,
+            HelpCircle: <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">{icons.HelpCircle}</svg>,
+        };
+
+        return <span className={className}>{svgs[name] || svgs.HelpCircle}</span>;
+    };
+
+
+    const App = () => {
+        const [weatherData, setWeatherData] = useState(null);
+        const [loading, setLoading] = useState(true);
+        const [error, setError] = useState(null);
+
+        const LAT = 40.71;
+        const LON = -73.96;
+
+        useEffect(() => {
+            const fetchWeather = async () => {
+                try {
+                    // Fetch in Fahrenheit, we will convert to C manually
+                    const response = await fetch(
+                        `https://api.open-meteo.com/v1/forecast?latitude=${LAT}&longitude=${LON}&current=temperature_2m,relative_humidity_2m,weather_code,wind_speed_10m&daily=weather_code,temperature_2m_max,temperature_2m_min&temperature_unit=fahrenheit&wind_speed_unit=mph&precipitation_unit=inch&timezone=America%2FNew_York`
+                    );
+                    
+                    if (!response.ok) throw new Error('Failed to fetch weather data');
+                    
+                    const data = await response.json();
+                    setWeatherData(data);
+                    setLoading(false);
+                } catch (err) {
+                    setError(err.message);
+                    setLoading(false);
+                }
+            };
+
+            fetchWeather();
+        }, []);
+
+        const toCelsius = (tempF) => {
+            return Math.round((tempF - 32) * 5 / 9);
+        };
+
+        const getDayName = (dateString) => {
+            const date = new Date(dateString);
+            return date.toLocaleDateString('en-US', { weekday: 'short' });
+        };
+
+        const getFullDate = (dateString) => {
+            const date = new Date(dateString);
+            return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+        };
+
+        if (loading) {
+            return (
+                <div className="flex items-center justify-center min-h-screen text-indigo-800">
+                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div>
+                </div>
+            );
+        }
+
+        if (error) {
+            return (
+                <div className="flex items-center justify-center min-h-screen">
+                    <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+                        <strong className="font-bold">Error: </strong>
+                        <span className="block sm:inline">{error}</span>
+                    </div>
+                </div>
+            );
+        }
+
+        const current = weatherData.current;
+        const weatherInfo = getWeatherInfo(current.weather_code);
+        const daily = weatherData.daily;
+
+        return (
+            <div className="max-w-4xl mx-auto">
+                <header className="mb-6 flex justify-between items-center glass-panel p-4 rounded-xl shadow-sm">
+                    <div className="flex items-center gap-2 text-indigo-900">
+                        <LegacyIcon name="MapPin" className="text-indigo-600" size={24} />
+                        <div>
+                            <h1 className="text-xl font-bold leading-tight">Williamsburg, Brooklyn</h1>
+                            <p className="text-xs text-indigo-500 font-medium">NY, United States</p>
+                        </div>
+                    </div>
+                    
+                    <div className="flex items-center gap-2 bg-white/50 px-4 py-2 rounded-full font-bold text-indigo-900 shadow-sm border border-indigo-100">
+                        <span className="text-sm font-medium text-indigo-400 uppercase tracking-wide">Dual Units</span>
+                    </div>
+                </header>
+
+                <main className="grid gap-6">
+                    {/* Current Weather Card */}
+                    <div className="glass-panel rounded-3xl p-8 text-center md:text-left relative overflow-hidden shadow-lg">
+                        <div className="absolute top-0 right-0 p-8 opacity-10">
+                            <LegacyIcon name={weatherInfo.icon} size={200} className="text-indigo-900" />
+                        </div>
+                        
+                        <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-8">
+                            <div className="flex flex-col items-center md:items-start">
+                                <span className="text-indigo-500 font-medium uppercase tracking-wider text-sm mb-2">Current Weather</span>
+                                
+                                {/* Side-by-side Dual Temperature Display */}
+                                <div className="flex items-baseline gap-4 sm:gap-6">
+                                    <div className="flex items-start">
+                                        <span className="text-7xl sm:text-8xl font-bold tracking-tighter text-indigo-900">
+                                            {Math.round(current.temperature_2m)}
+                                        </span>
+                                        <span className="text-2xl sm:text-4xl font-semibold text-indigo-400 mt-2 sm:mt-4">°F</span>
+                                    </div>
+                                    <div className="h-16 w-px bg-indigo-200 self-center hidden sm:block"></div>
+                                    <div className="flex items-start">
+                                        <span className="text-7xl sm:text-8xl font-bold tracking-tighter text-indigo-900">
+                                            {toCelsius(current.temperature_2m)}
+                                        </span>
+                                        <span className="text-2xl sm:text-4xl font-semibold text-indigo-400 mt-2 sm:mt-4">°C</span>
+                                    </div>
+                                </div>
+
+                                <div className="mt-4 flex items-center text-indigo-900">
+                                    <LegacyIcon name={weatherInfo.icon} size={32} className={weatherInfo.color} />
+                                    <span className="text-xl font-medium ml-2">{weatherInfo.label}</span>
+                                </div>
+                            </div>
+
+                            <div className="grid grid-cols-2 gap-4 w-full md:w-auto bg-white/40 p-6 rounded-2xl">
+                                <div className="flex items-center gap-3">
+                                    <div className="p-2 bg-blue-100 rounded-lg text-blue-600">
+                                        <LegacyIcon name="Wind" size={20} />
+                                    </div>
+                                    <div>
+                                        <p className="text-xs text-slate-500 font-semibold uppercase">Wind</p>
+                                        <p className="font-bold text-slate-700">{current.wind_speed_10m} <span className="text-xs font-normal text-slate-500">mph</span></p>
+                                    </div>
+                                </div>
+                                <div className="flex items-center gap-3">
+                                    <div className="p-2 bg-sky-100 rounded-lg text-sky-600">
+                                        <LegacyIcon name="Droplets" size={20} />
+                                    </div>
+                                    <div>
+                                        <p className="text-xs text-slate-500 font-semibold uppercase">Humidity</p>
+                                        <p className="font-bold text-slate-700">{current.relative_humidity_2m}<span className="text-xs font-normal text-slate-500">%</span></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Forecast Grid */}
+                    <div>
+                        <h2 className="text-lg font-bold text-indigo-900 mb-4 px-2">7-Day Forecast</h2>
+                        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-7 gap-3">
+                            {daily.time.map((time, index) => {
+                                const code = daily.weather_code[index];
+                                const maxF = daily.temperature_2m_max[index];
+                                const minF = daily.temperature_2m_min[index];
+                                const info = getWeatherInfo(code);
+                                const isToday = index === 0;
+
+                                return (
+                                    <div key={time} className={`glass-panel p-3 rounded-2xl flex flex-col items-center justify-between gap-3 transition-transform hover:scale-105 ${isToday ? 'ring-2 ring-indigo-400 bg-white/80' : ''}`}>
+                                        <div className="text-center w-full border-b border-indigo-50 pb-2">
+                                            <p className={`font-bold ${isToday ? 'text-indigo-600' : 'text-slate-700'}`}>{getDayName(time)}</p>
+                                            <p className="text-[10px] text-slate-400 uppercase tracking-wide">{getFullDate(time)}</p>
+                                        </div>
+                                        
+                                        <LegacyIcon name={info.icon} size={28} className={info.color} />
+                                        
+                                        <div className="w-full grid grid-cols-1 gap-1 text-sm">
+                                            <div className="bg-white/40 rounded p-1.5 flex justify-between items-center">
+                                                <span className="text-[10px] font-bold text-indigo-400 uppercase">Hi</span>
+                                                <div className="text-right leading-tight">
+                                                    <span className="font-bold text-slate-800 text-xs block">{Math.round(maxF)}°F</span>
+                                                    <span className="font-bold text-indigo-600 text-xs block">{toCelsius(maxF)}°C</span>
+                                                </div>
+                                            </div>
+                                            <div className="bg-indigo-50/50 rounded p-1.5 flex justify-between items-center">
+                                                <span className="text-[10px] font-bold text-slate-400 uppercase">Lo</span>
+                                                <div className="text-right leading-tight">
+                                                    <span className="font-medium text-slate-600 text-xs block">{Math.round(minF)}°F</span>
+                                                    <span className="font-medium text-slate-400 text-xs block">{toCelsius(minF)}°C</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                );
+                            })}
+                        </div>
+                    </div>
+                </main>
+                
+                <footer className="mt-8 text-center text-indigo-400 text-xs">
+                    <p>Weather data provided by Open-Meteo</p>
+                </footer>
+            </div>
+        );
+    };
+
+    const root = ReactDOM.createRoot(document.getElementById('root'));
+    root.render(<App />);
+
+</script>
+</body>
+</html>
