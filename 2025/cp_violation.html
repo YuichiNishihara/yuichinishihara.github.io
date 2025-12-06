@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nature Discovery: CP Violation</title>
+    <style>
+        :root {
+            --bg-color: #121212;
+            --container-bg: #1e1e1e;
+            --text-color: #e0e0e0;
+            
+            /* Brand Colors */
+            --matter-red: #d32f2f;
+            --antimatter-blue: #1976d2;
+            --neutron-grey: #b0bec5;
+            --antineutron-dark: #546e7a;
+            --proton-color: #ffeb3b; 
+            --helium-color: #ff9800;
+            
+            /* Status Colors */
+            --valid-green: #00e676;
+            --invalid-red: #ff1744;
+            
+            /* Button Colors */
+            --btn-blue: #2979ff;
+            --btn-red: #f44336;
+            --btn-green: #00e676;
+            --btn-purple: #ab47bc;
+            --btn-grey: #616161;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+        h1, h2, h3 { color: #fff; text-align: center; margin-bottom: 10px;}
+        .container {
+            max-width: 850px;
+            width: 95%;
+            background: var(--container-bg);
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+            margin-top: 20px;
+            margin-bottom: 40px;
+        }
+        .slide { display: none; animation: fadeIn 0.5s; padding-bottom: 20px; }
+        .slide.active { display: block; }
+        .highlight { color: #fbbf24; font-weight: bold; }
+        p { line-height: 1.5; }
+
+        /* --- Viz Box --- */
+        .viz-box {
+            width: 100%;
+            min-height: 350px;
+            background: #000;
+            border: 2px solid #333;
+            border-radius: 8px;
+            position: relative;
+            overflow: hidden;
+            margin: 20px 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-sizing: border-box;
+        }
+        
+        /* --- SLIDE 1: SUN ENGINE --- */
+        .sun-bg { 
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%; 
+            z-index: 0; 
+            background: radial-gradient(circle, rgba(255,235,59,0.6) 0%, rgba(255,152,0,0.3) 40%, rgba(0,0,0,1) 80%); 
+            opacity: 1; 
+            transition: opacity 1s;
+        }
+        #sunCanvas { position: relative; z-index: 10; }
+        #sunStatus {
+            position: absolute; bottom: 20px; width: 100%; text-align: center; 
+            font-weight: bold; font-size: 1.2rem; color: #ffeb3b; 
+            z-index: 20; text-shadow: 0 0 5px black;
+        }
+
+        /* --- CONTROLS --- */
+        .controls { display: flex; gap: 10px; justify-content: center; margin-top: 20px; flex-wrap: wrap; }
+        .controls-row { display: flex; gap: 8px; justify-content: center; align-items: center; margin-top: 15px; flex-wrap: wrap; width: 100%; }
+        
+        button {
+            padding: 10px 16px; color: white;
+            border: none; border-radius: 6px; cursor: pointer; font-size: 0.95rem;
+            transition: filter 0.2s, transform 0.1s;
+            font-weight: bold;
+        }
+        button:hover { filter: brightness(1.15); }
+        button:active { transform: scale(0.98); }
+        button:disabled { background-color: #333 !important; color: #777; cursor: not-allowed; filter: none; transform: none; }
+
+        .btn-nav { background-color: var(--btn-blue); }
+        .btn-toggle-off { background-color: var(--btn-red); }
+        .btn-toggle-on { background-color: var(--btn-green); color: #000; }
+        .btn-flip { background-color: var(--btn-red); }
+        .btn-activate { background-color: var(--btn-purple); font-weight: 800; letter-spacing: 0.5px; min-width: 180px; }
+        .btn-reset { background-color: var(--btn-grey); }
+
+        /* --- Navigation --- */
+        .nav-dots { display: flex; justify-content: center; gap: 8px; margin-bottom: 20px; }
+        .dot { width: 10px; height: 10px; border-radius: 50%; background: #444; cursor: pointer; transition: background 0.3s; }
+        .dot.active { background: var(--btn-blue); }
+
+        /* --- SLIDE 2: CP VALIDATOR --- */
+        .validator-box { display: flex; flex-direction: column; align-items: center; width: 100%; height: 100%; justify-content: flex-start; gap: 10px; padding: 20px 0; }
+        
+        .sphere-stage {
+            position: relative; width: 160px; height: 160px;
+            display: flex; justify-content: center; align-items: center;
+            perspective: 600px;
+            margin: 10px 0;
+        }
+        .axis-line { position: absolute; width: 4px; height: 180px; background: #555; z-index: 0; }
+        .axis-arrow-top {
+            position: absolute; top: -15px; left: 50%; transform: translateX(-50%);
+            border-left: 8px solid transparent; border-right: 8px solid transparent;
+            border-bottom: 15px solid #fff;
+        }
+
+        .sphere {
+            width: 100px; height: 100px; border-radius: 50%;
+            position: relative; z-index: 2;
+            background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.8), rgba(255,255,255,0) 20%),
+                        repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(0,0,0,0.1) 10px, rgba(0,0,0,0.1) 20%);
+            background-color: var(--matter-red); 
+            box-shadow: inset -10px -10px 20px rgba(0,0,0,0.5), 0 0 20px currentColor;
+            transition: background-color 0.5s, transform 0.5s;
+            display: flex; justify-content: center; align-items: center;
+            color: white; font-weight: bold; font-size: 2rem; text-shadow: 1px 1px 3px black;
+        }
+
+        .spin-up { animation: spinTextureRight 2s linear infinite; }
+        .spin-down { animation: spinTextureLeft 2s linear infinite; }
+        @keyframes spinTextureRight { from { background-position: 0 0; } to { background-position: 100px 0; } }
+        @keyframes spinTextureLeft { from { background-position: 0 0; } to { background-position: -100px 0; } }
+
+        .result-display {
+            width: 90%; background: #222; border: 1px solid #555;
+            padding: 15px; border-radius: 8px; text-align: center; min-height: 60px;
+            display: flex; align-items: center; justify-content: center; flex-direction: column;
+            margin-top: 15px; transition: border-color 0.3s;
+        }
+        
+        .state-labels { display: flex; gap: 20px; font-family: monospace; font-size: 1.1rem; font-weight: bold; margin-bottom: 25px; }
+        
+        .neutron-mode { background-color: var(--neutron-grey) !important; box-shadow: 0 0 30px white !important; color: #333; }
+        .anti-neutron-mode { background-color: var(--antineutron-dark) !important; box-shadow: 0 0 30px #90caf9 !important; color: white; }
+        
+        .shake-anim { animation: shake 0.1s infinite; }
+        .pulse-success { animation: pulseGreen 0.5s; }
+        .pulse-fail { animation: shakeRed 0.4s; }
+        
+        @keyframes shake { 0% { transform: translate(1px, 1px) rotate(0deg); } 100% { transform: translate(1px, -2px) rotate(-1deg); } }
+        @keyframes pulseGreen { 0% { transform: scale(1); } 50% { transform: scale(1.2); filter: brightness(2); } 100% { transform: scale(1); } }
+        @keyframes shakeRed { 0% { transform: translateX(0); } 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } 100% { transform: translateX(0); } }
+
+        .fusion-why { background: rgba(255,255,255,0.05); padding: 15px; border-radius: 8px; font-size: 0.95rem; border-left: 4px solid var(--btn-blue); margin-bottom: 10px; transition: opacity 0.3s; }
+
+
+        /* --- SLIDE 3: Quarks --- */
+        .particle-container { display: flex; flex-direction: column; align-items: center; width: 45%; text-align: center; }
+        .orbit-box { width: 150px; height: 150px; position: relative; display: flex; justify-content: center; align-items: center; border: 1px dashed #555; border-radius: 50%; margin-bottom: 10px; }
+        .quark { width: 25px; height: 25px; border-radius: 50%; position: absolute; box-shadow: 0 0 8px currentColor; font-size: 10px; color: black; font-weight: bold; display: flex; justify-content: center; align-items: center; }
+        .m-q1 { background: var(--matter-red); animation: spin-m1 2s linear infinite; }
+        .m-q2 { background: var(--antimatter-blue); animation: spin-m2 2s linear infinite; border: 2px solid white; }
+        .b-q1 { background: var(--proton-color); animation: spin-b1 3s linear infinite; }
+        .b-q2 { background: var(--matter-red); animation: spin-b2 3s linear infinite; }
+        .b-q3 { background: var(--antimatter-blue); animation: spin-b3 3s linear infinite; }
+        @keyframes spin-m1 { from { transform: rotate(0deg) translateX(40px) rotate(0deg); } to { transform: rotate(360deg) translateX(40px) rotate(-360deg); } }
+        @keyframes spin-m2 { from { transform: rotate(180deg) translateX(40px) rotate(-180deg); } to { transform: rotate(540deg) translateX(40px) rotate(-540deg); } }
+        @keyframes spin-b1 { from { transform: rotate(0deg) translateX(50px); } to { transform: rotate(360deg) translateX(50px); } }
+        @keyframes spin-b2 { from { transform: rotate(120deg) translateX(50px); } to { transform: rotate(480deg) translateX(50px); } }
+        @keyframes spin-b3 { from { transform: rotate(240deg) translateX(50px); } to { transform: rotate(600deg) translateX(50px); } }
+
+        /* --- SLIDE 4: BOUNCING PARTICLES (RESTORED) --- */
+        .particle-simple { 
+            width: 25px; height: 25px; border-radius: 50%; position: absolute; 
+            box-shadow: 0 0 10px currentColor; 
+        }
+        .matter { background-color: var(--matter-red); color: var(--matter-red); }
+        .antimatter { background-color: var(--antimatter-blue); color: var(--antimatter-blue); }
+        
+        .anim-float { animation: float 3s infinite ease-in-out; }
+        .anim-float-rev { animation: float 3s infinite ease-in-out reverse; }
+        
+        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-20px); } }
+
+        /* --- SLIDE 5 Result Box --- */
+        .explanation-box {
+            display: none; /* Hidden initially */
+            margin-top: 20px; padding: 15px; background: #222; border-left: 4px solid #fbbf24;
+            animation: fadeIn 1s;
+        }
+        .stats { display: flex; justify-content: space-around; margin: 15px 0; font-size: 1.1rem; font-weight: bold; }
+        .stat-box { text-align: center; }
+        .stat-val { font-size: 3rem; display: block; margin-top: 5px; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>The Particle Mirror</h1>
+        <div class="nav-dots" id="navDots"></div>
+
+        <div class="slide active" id="slide1">
+            <h2>1. The Engine: The Weak Force</h2>
+            <p>There are 4 fundamental forces: Gravity, Electromagnetism, Strong Force, and the <b>Weak Force</b>.</p>
+            <p>We don't feel it, but without the Weak Force, the Sun would not shine. It allows protons to fuse by turning them into neutrons.</p>
+
+            <div class="viz-box" style="background: #000;">
+                <div id="sunGlow" class="sun-bg"></div>
+                <canvas id="sunCanvas" width="700" height="350"></canvas>
+                <div id="sunStatus">SUN STATUS: SHINING ☀️ (Fusion Active)</div>
+            </div>
+
+            <div class="controls" style="flex-direction: column; align-items: center;">
+                <p style="font-size: 0.9rem; text-align: center; color: #aaa; margin-bottom: 10px;">
+                    With Weak Force ON: <b>Proton + Proton = Helium (Orange)</b>.
+                </p>
+                <button id="btnWeakToggle" class="btn-toggle-off" onclick="toggleWeakForce()">Turn Weak Force OFF</button>
+            </div>
+            
+            <div class="controls"><button id="btnNext1" class="btn-nav" onclick="nextSlide()" disabled>Next: The Rules</button></div>
+        </div>
+
+        <div class="slide" id="slide2">
+            <h2>2. The Rules: The "Vampire" Force</h2>
+            <p>The Weak Force is like a vampire: it cannot see its reflection. It only interacts with particles spinning in a specific way.</p>
+            
+            <div class="fusion-why" id="fusionDesc" style="opacity: 0.6;">
+                <strong>Why this matters for Fusion:</strong> Protons repel each other. To fuse, one proton must turn into a neutral <b>Neutron</b>. Only the Weak Force can do this, if the spin is right.
+            </div>
+
+            <div class="viz-box" style="min-height: 450px;">
+                <div class="validator-box">
+                    <div class="state-labels">
+                        <span id="lblType" style="color: var(--matter-red)">PROTON</span>
+                        <span>+</span>
+                        <span id="lblSpin">SPIN UP</span>
+                    </div>
+
+                    <div class="sphere-stage">
+                        <div class="axis-line"><div class="axis-arrow-top"></div></div>
+                        <div id="particleSphere" class="sphere spin-up">P</div>
+                    </div>
+
+                    <div class="controls-row">
+                        <button class="btn-flip" onclick="toggleC()">Flip Charge</button>
+                        <button class="btn-flip" onclick="toggleP()">Flip Parity</button>
+                        <button id="btnActivate" class="btn-activate" onclick="activateWeakForce()">ACTIVATE WEAK FORCE</button>
+                        <button class="btn-reset" onclick="resetCP()">Reset</button>
+                    </div>
+
+                    <div id="resultBox" class="result-display">
+                        <div style="color: #888; font-style: italic;">Set state, then click Activate...</div>
+                    </div>
+                </div>
+            </div>
+            <div class="controls"><button class="btn-nav" onclick="nextSlide()" id="btnNext2" disabled>Next: The Players</button></div>
+        </div>
+
+        <div class="slide" id="slide3">
+            <h2>3. The Players: Mesons vs. Baryons</h2>
+            <p>Now, let's look at the particles involved. Quarks group together in two main ways:</p>
+            <div class="viz-box" style="background: #111;">
+                <div class="particle-container">
+                    <div class="orbit-box"><div class="quark m-q1">u</div><div class="quark m-q2">d</div></div>
+                    <h3>Meson</h3><p><b>2 Quarks</b><br>Simple. Short-lived.</p>
+                </div>
+                <div style="height: 150px; border-left: 2px solid #333;"></div>
+                <div class="particle-container">
+                    <div class="orbit-box"><div class="quark b-q1">u</div><div class="quark b-q2">d</div><div class="quark b-q3">b</div></div>
+                    <h3>Baryon</h3><p><b>3 Quarks</b><br>Complex. The stuff you are made of.</p>
+                </div>
+            </div>
+            <div class="controls"><button class="btn-nav" onclick="nextSlide()">Next: The Discovery</button></div>
+        </div>
+
+        <div class="slide" id="slide4">
+            <h2>4. The Discovery: Baryons Break the Rule</h2>
+            <p>If we flip BOTH Charge and Parity (CP Symmetry), the Weak Force should work identically. But the <i>Nature</i> paper shows that for Baryons, it behaves slightly differently.</p>
+            <div class="viz-box" id="mirrorViz">
+                <div style="position: absolute; left: 25%; text-align: center;">
+                    <div class="particle-simple matter anim-float"></div>
+                    <p>Original Baryon</p>
+                </div>
+                <div style="border-left: 2px dashed #666; height: 100%; position: absolute; left: 50%;"></div>
+                <div style="position: absolute; right: 25%; text-align: center;">
+                    <div class="particle-simple antimatter anim-float-rev"></div>
+                    <p>CP-Flipped Baryon<br><span style="color: #fbbf24; font-size: 0.9rem;">(Decays Differently!)</span></p>
+                </div>
+            </div>
+            <div class="controls"><button class="btn-nav" onclick="nextSlide()">Next: The Experiment</button></div>
+        </div>
+
+        <div class="slide" id="slide5">
+            <h2>5. The Experiment & Result</h2>
+            <p>The LHCb experiment smashed particles to create billions of Baryons. They counted the decays to see if Matter and Antimatter behave the same.</p>
+            <div class="viz-box" style="flex-direction: column;">
+                <canvas id="colliderCanvas" width="700" height="250"></canvas>
+                <div class="stats" style="width: 100%; margin-top: 10px;">
+                    <div class="stat-box" style="color: var(--matter-red)">Matter Decays<span class="stat-val" id="matterCount">0</span></div>
+                    <div class="stat-box" style="color: var(--antimatter-blue)">Antimatter Decays<span class="stat-val" id="antimatterCount">0</span></div>
+                </div>
+            </div>
+            
+            <div id="expResult" class="explanation-box">
+                <h3 style="color: #fbbf24; margin: 0;">RESULT: A Tiny Difference!</h3>
+                <p>Did you notice the count? They aren't equal. <br>
+                This confirms <b>CP Violation</b> in Baryons. This tiny imbalance means nature has a slight preference for Matter over Antimatter.</p>
+            </div>
+
+            <div class="controls">
+                <button id="btnRun" class="btn-nav" onclick="runExperiment()">Run Again</button>
+                <button id="btnNext5" class="btn-nav" onclick="nextSlide()" disabled>Next: Significance</button>
+            </div>
+        </div>
+
+        <div class="slide" id="slide6">
+            <h2>6. Why We Exist</h2>
+            <p>This asymmetry allowed Matter to survive the Big Bang. Without CP Violation, everything would have annihilated.</p>
+            <div class="viz-box" id="uniViz" style="background: #000;">
+                <canvas id="uniCanvas" width="700" height="350"></canvas>
+                <div id="uniOverlay" style="position: absolute; color: white; font-size: 1.5rem; font-weight: bold; text-shadow: 0 0 10px black; display: none;"></div>
+            </div>
+            
+            <div class="controls-row">
+                <button id="btnCPToggle" class="btn-toggle-off" onclick="toggleCPViolation()">CP Violation: OFF</button>
+                <button class="btn-nav" onclick="runUniverse()">Simulate Big Bang</button>
+                <button class="btn-reset" onclick="resetUniverse()">Reset</button>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // --- Global Vars ---
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        const dotsContainer = document.getElementById('navDots');
+        
+        // --- 1. Navigation Logic ---
+        function initNav() {
+            dotsContainer.innerHTML = ''; 
+            slides.forEach((_, i) => {
+                const dot = document.createElement('div');
+                dot.className = `dot ${i === 0 ? 'active' : ''}`;
+                dot.onclick = () => goToSlide(i);
+                dotsContainer.appendChild(dot);
+            });
+        }
+        function updateSlides() {
+            slides.forEach((s, i) => s.className = `slide ${i === currentSlide ? 'active' : ''}`);
+            document.querySelectorAll('.dot').forEach((d, i) => d.className = `dot ${i === currentSlide ? 'active' : ''}`);
+        }
+        function nextSlide() { if (currentSlide < slides.length - 1) { goToSlide(currentSlide + 1); } }
+        
+        function goToSlide(n) { 
+            currentSlide = n; 
+            updateSlides();
+            
+            // --- AUTO START LOGIC ---
+            if (currentSlide === 4) { // Slide 5 (index 4)
+                runExperiment();
+            }
+            if (currentSlide === 5) { // Slide 6 (index 5)
+                runUniverse();
+            }
+        }
+
+        // --- 2. Sun Engine Logic (Slide 1) ---
+        let weakForceOn = true;
+        let sunCtx = null;
+        let sunInterval = null;
+        let sParticles = [];
+        let sunStarted = false;
+
+        function initSun() {
+            const cvs = document.getElementById('sunCanvas');
+            if(!cvs) return;
+            sunCtx = cvs.getContext('2d');
+            
+            sParticles = [];
+            for(let i=0; i<25; i++) { spawnProton(); }
+            
+            if(sunInterval) clearInterval(sunInterval);
+            sunInterval = setInterval(drawSunFrame, 20);
+        }
+
+        function spawnProton() {
+             sParticles.push({
+                x: Math.random() * 700, y: Math.random() * 350,
+                vx: (Math.random() - 0.5) * 6, vy: (Math.random() - 0.5) * 6,
+                type: 'p', r: 8, alpha: 1.0
+            });
+        }
+
+        function drawSunFrame() {
+            if(!sunCtx) return;
+            sunCtx.clearRect(0,0,700,350);
+            
+            let pCount = sParticles.filter(p => p.type === 'p').length;
+            if(pCount < 20) spawnProton();
+
+            for(let i=sParticles.length-1; i>=0; i--) {
+                let p1 = sParticles[i];
+                p1.x += p1.vx; p1.y += p1.vy;
+
+                if(p1.x < -10) p1.x = 710; if(p1.x > 710) p1.x = -10;
+                if(p1.y < -10) p1.y = 360; if(p1.y > 360) p1.y = -10;
+
+                if (p1.type === 'He') {
+                    p1.alpha -= 0.01; 
+                    if (p1.alpha <= 0) { sParticles.splice(i, 1); continue; }
+                }
+
+                if (p1.type === 'p') {
+                    for(let j=i-1; j>=0; j--) {
+                        let p2 = sParticles[j];
+                        if (p2.type !== 'p') continue; 
+                        let dx = p2.x - p1.x; let dy = p2.y - p1.y;
+                        let dist = Math.sqrt(dx*dx + dy*dy);
+                        let minDist = p1.r + p2.r; 
+
+                        if(dist < minDist) { 
+                            if(weakForceOn) {
+                                 sunCtx.beginPath(); sunCtx.arc((p1.x+p2.x)/2, (p1.y+p2.y)/2, 30, 0, 6.28);
+                                 sunCtx.fillStyle = 'rgba(255,255,255,0.8)'; sunCtx.fill();
+                                 p1.type = 'He'; p1.r = 14; 
+                                 p1.vx = (p1.vx + p2.vx) / 2; p1.vy = (p1.vy + p2.vy) / 2;
+                                 sParticles.splice(j, 1); i--; spawnProton(); break; 
+                            } else {
+                                let tempVx = p1.vx; let tempVy = p1.vy;
+                                p1.vx = p2.vx; p1.vy = p2.vy;
+                                p2.vx = tempVx; p2.vy = tempVy;
+                                let angle = Math.atan2(dy, dx);
+                                p1.x -= Math.cos(angle)*2; p1.y -= Math.sin(angle)*2;
+                                p2.x += Math.cos(angle)*2; p2.y += Math.sin(angle)*2;
+                            }
+                        }
+                    }
+                }
+
+                sunCtx.globalAlpha = p1.alpha; 
+                sunCtx.beginPath(); sunCtx.arc(p1.x, p1.y, p1.r, 0, 6.28);
+                if (p1.type === 'He') {
+                    sunCtx.fillStyle = '#ff9800'; sunCtx.fill();
+                    sunCtx.strokeStyle = '#fff'; sunCtx.lineWidth=2; sunCtx.stroke();
+                    sunCtx.fillStyle='white'; sunCtx.font='bold 12px sans-serif'; sunCtx.textAlign='center'; sunCtx.fillText('He', p1.x, p1.y+4);
+                } else {
+                    sunCtx.fillStyle = '#ffeb3b'; sunCtx.fill();
+                    sunCtx.strokeStyle = '#000'; sunCtx.lineWidth=1; sunCtx.stroke();
+                    sunCtx.fillStyle='black'; sunCtx.font='10px sans-serif'; sunCtx.textAlign='center'; sunCtx.fillText('p', p1.x, p1.y+4);
+                }
+                sunCtx.globalAlpha = 1.0;
+            }
+        }
+
+        function toggleWeakForce() {
+            weakForceOn = !weakForceOn; 
+            if(!sunStarted) {
+                sunStarted = true;
+                document.getElementById('btnNext1').disabled = false;
+            }
+            const btn = document.getElementById('btnWeakToggle');
+            const st = document.getElementById('sunStatus');
+            const glow = document.getElementById('sunGlow');
+
+            if(weakForceOn) { 
+                btn.innerText = "Turn Weak Force OFF"; btn.className = "btn-toggle-off"; 
+                glow.style.opacity = 1; st.innerText = "SUN STATUS: SHINING ☀️ (Fusion Active)"; st.style.color = "#ffeb3b"; 
+            } 
+            else { 
+                btn.innerText = "Turn Weak Force ON"; btn.className = "btn-toggle-on"; 
+                glow.style.opacity = 0; st.innerText = "SUN STATUS: DARK (Protons Repel)"; st.style.color = "#888"; 
+            }
+            initSun();
+        }
+
+
+        // --- 3. CP Validator Logic (Slide 2) ---
+        let isProton = true; 
+        let isSpinUp = true; 
+
+        function updateVisuals() {
+            const lblType = document.getElementById('lblType');
+            const lblSpin = document.getElementById('lblSpin');
+            const core = document.getElementById('particleSphere');
+            const result = document.getElementById('resultBox');
+
+            // Use HTML Entities for P-bar
+            lblType.innerHTML = isProton ? "PROTON" : "ANTI-PROTON (P&#773;)";
+            lblType.style.color = isProton ? "var(--matter-red)" : "var(--antimatter-blue)";
+            lblSpin.innerText = isSpinUp ? "SPIN UP" : "SPIN DOWN";
+            
+            core.style.backgroundColor = isProton ? "var(--matter-red)" : "var(--antimatter-blue)";
+            core.classList.remove('spin-up', 'spin-down', 'neutron-mode', 'anti-neutron-mode', 'pulse-success', 'pulse-fail');
+            core.classList.add(isSpinUp ? 'spin-up' : 'spin-down');
+            core.innerHTML = isProton ? "P" : "P&#773;"; 
+
+            result.innerHTML = '<div style="color: #888; font-style: italic;">Set state, then click Activate...</div>';
+            result.style.borderColor = "#555";
+        }
+
+        function activateWeakForce() {
+            const core = document.getElementById('particleSphere');
+            const result = document.getElementById('resultBox');
+            const btnNext = document.getElementById('btnNext2');
+            const btnActivate = document.getElementById('btnActivate');
+
+            btnActivate.disabled = true;
+            core.classList.add('shake-anim'); // Start Shaking
+
+            setTimeout(() => {
+                core.classList.remove('shake-anim');
+                btnActivate.disabled = false;
+
+                // Logic Check
+                if (isProton && isSpinUp) {
+                    core.classList.add('pulse-success', 'neutron-mode');
+                    core.innerText = "N";
+                    document.getElementById('lblType').innerText = "NEUTRON (N)";
+                    document.getElementById('lblType').style.color = "var(--neutron-grey)";
+                    
+                    result.innerHTML = '<div style="color: var(--valid-green); font-weight: bold; font-size: 1.2rem;">SUCCESS: FUSION! ✅</div><div>Proton turned into a Neutron.</div>';
+                    result.style.borderColor = "var(--valid-green)";
+                    btnNext.disabled = false;
+                }
+                else if (!isProton && !isSpinUp) {
+                    core.classList.add('pulse-success', 'anti-neutron-mode');
+                    core.innerHTML = "N&#773;"; 
+                    document.getElementById('lblType').innerHTML = "ANTI-NEUTRON (N&#773;)";
+                    document.getElementById('lblType').style.color = "var(--antineutron-dark)";
+
+                    result.innerHTML = '<div style="color: var(--valid-green); font-weight: bold; font-size: 1.2rem;">INTERACTION ALLOWED ✅</div><div>Anti-Proton turned into Anti-Neutron.</div>';
+                    result.style.borderColor = "var(--valid-green)";
+                    btnNext.disabled = false;
+                }
+                else {
+                    core.classList.add('pulse-fail');
+                    result.innerHTML = '<div style="color: var(--invalid-red); font-weight: bold; font-size: 1.2rem;">IGNORED 👻</div><div>The Weak Force cannot see this particle.</div>';
+                    result.style.borderColor = "var(--invalid-red)";
+                }
+            }, 1500); 
+        }
+
+        function toggleC() { isProton = !isProton; updateVisuals(); }
+        function toggleP() { isSpinUp = !isSpinUp; updateVisuals(); }
+        function resetCP() { isProton = true; isSpinUp = true; updateVisuals(); }
+
+
+        // --- 4. Collider Logic (Slide 5) ---
+        let cCtx = null; let cInterval = null; let cParticles = [];
+        function runExperiment() {
+            const cvs = document.getElementById('colliderCanvas');
+            cCtx = cvs.getContext('2d');
+            document.getElementById('btnRun').disabled = true;
+            document.getElementById('expResult').style.display = 'none'; // Hide text first
+            
+            let m=0, a=0, frames=0;
+            cParticles = [];
+
+            cInterval = setInterval(() => {
+                frames++;
+                for(let i=0; i<5; i++) {
+                    cParticles.push({x:350, y:125, vx:(Math.random()-.5)*12, vy:(Math.random()-.5)*12, t: Math.random()>.5?'m':'a', l: 30});
+                }
+
+                cCtx.fillStyle = 'rgba(0,0,0,0.2)'; cCtx.fillRect(0,0,700,350);
+                
+                for(let i=cParticles.length-1; i>=0; i--) {
+                    let p = cParticles[i];
+                    p.x+=p.vx; p.y+=p.vy; p.l--;
+                    cCtx.beginPath(); cCtx.arc(p.x,p.y,3,0,6.28); 
+                    cCtx.fillStyle = p.t=='m'?'#ff4444':'#4488ff'; cCtx.fill();
+
+                    if(p.l<=0) {
+                        if(p.t=='m') m+=105; else a+=96;
+                        cCtx.beginPath(); cCtx.arc(p.x,p.y,6,0,6.28); cCtx.fillStyle='white'; cCtx.fill();
+                        cParticles.splice(i,1);
+                    }
+                }
+                document.getElementById('matterCount').innerText = m.toLocaleString();
+                document.getElementById('antimatterCount').innerText = a.toLocaleString();
+
+                if(frames>100) {
+                    clearInterval(cInterval);
+                    document.getElementById('btnRun').innerText = "Run Again";
+                    document.getElementById('btnRun').disabled = false;
+                    document.getElementById('btnNext5').disabled = false;
+                    document.getElementById('expResult').style.display = 'block'; 
+                    cCtx.clearRect(0,0,700,350);
+                }
+            }, 30);
+        }
+
+        // --- 6. Universe Logic (Slide 6) ---
+        let uCtx = null; let uInterval = null;
+        let cpViolationOn = false;
+
+        function toggleCPViolation() {
+            cpViolationOn = !cpViolationOn;
+            const btn = document.getElementById('btnCPToggle');
+            if(cpViolationOn) {
+                btn.innerText = "CP Violation: ON (Matter Survives)";
+                btn.className = "btn-toggle-on";
+            } else {
+                btn.innerText = "CP Violation: OFF (Perfect Symmetry)";
+                btn.className = "btn-toggle-off";
+            }
+        }
+
+        function resetUniverse() { 
+            const c = document.getElementById('uniCanvas'); uCtx = c.getContext('2d'); 
+            uCtx.clearRect(0,0,700,350); document.getElementById('uniOverlay').style.display='none'; 
+        }
+
+        function runUniverse() {
+            const c = document.getElementById('uniCanvas'); uCtx = c.getContext('2d');
+            let uP = [];
+            document.getElementById('uniOverlay').style.display='none'; // Clear previous text immediately
+
+            for(let i=0; i<150; i++) {
+                uP.push({x: Math.random()*700, y: Math.random()*350, t:'m', active:true});
+                uP.push({x: Math.random()*700, y: Math.random()*350, t:'a', active:true});
+            }
+            
+            if(uInterval) clearInterval(uInterval);
+            let frames = 0;
+
+            uInterval = setInterval(() => {
+                frames++;
+                uCtx.fillStyle = 'rgba(0,0,0,0.2)'; uCtx.fillRect(0,0,700,350);
+                
+                uP.forEach(p => { 
+                    if(p.active) { 
+                        // Seek logic: If CP is OFF, attract strongly at the end
+                        if(!cpViolationOn) {
+                             p.x+=(Math.random()-.5)*15; 
+                             p.y+=(Math.random()-.5)*15;
+                        } else {
+                             p.x+=(Math.random()-.5)*5; 
+                             p.y+=(Math.random()-.5)*5; 
+                        }
+                    } 
+                });
+
+                for(let i=0; i<uP.length; i++) {
+                    if(!uP[i].active) continue;
+                    for(let j=i+1; j<uP.length; j++) {
+                        if(!uP[j].active) continue;
+                        if(uP[i].t !== uP[j].t) {
+                            let dx = uP[i].x - uP[j].x; let dy = uP[i].y - uP[j].y;
+                            let rad = cpViolationOn ? 10 : 60; // Huge collision radius if symmetry enforced
+                            if(Math.sqrt(dx*dx+dy*dy) < rad) {
+                                if(cpViolationOn && uP[i].t == 'm' && Math.random() < 0.1) continue;
+                                uP[i].active = false; uP[j].active = false;
+                                uCtx.beginPath(); uCtx.arc(uP[i].x, uP[i].y, 10, 0, 6.28); uCtx.fillStyle='white'; uCtx.fill();
+                            }
+                        }
+                    }
+                }
+
+                let mCount=0;
+                uP.forEach(p => {
+                    if(p.active) {
+                        uCtx.beginPath(); uCtx.arc(p.x, p.y, 3, 0, 6.28);
+                        uCtx.fillStyle = p.t=='m'?'#ff4444':'#4488ff'; uCtx.fill();
+                        if(p.t=='m') mCount++;
+                    }
+                });
+
+                // FORCE KILL at end if symmetry is perfect
+                if(frames > 140 && !cpViolationOn) { 
+                    uP.forEach(p => p.active = false);
+                    mCount = 0; 
+                }
+
+                if(frames>150) {
+                    clearInterval(uInterval);
+                    const o = document.getElementById('uniOverlay');
+                    o.style.display='block';
+                    if(mCount > 0) { o.innerText = "MATTER SURVIVES!"; o.style.color = "#ff4444"; }
+                    else { o.innerText = "EMPTY UNIVERSE"; o.style.color = "#888"; }
+                }
+            }, 30);
+        }
+
+        // --- START ---
+        window.onload = function() {
+            initNav();
+            initSun(); 
+            updateVisuals(); 
+        };
+    </script>
+</body>
+</html>
