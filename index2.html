@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portfolio | Universe to Consciousness</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts: Inter and Space Grotesk -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+    
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        display: ['Space Grotesk', 'sans-serif'],
+                    },
+                    colors: {
+                        primary: '#6366f1', // Indigo 500
+                        secondary: '#ec4899', // Pink 500
+                        dark: '#0f172a', // Slate 900
+                        surface: '#1e293b', // Slate 800
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0f172a;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #334155;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #475569;
+        }
+
+        /* Glassmorphism Utilities */
+        .glass {
+            background: rgba(15, 23, 42, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .glass-card {
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        /* Active Nav State */
+        .nav-item.active {
+            color: #6366f1;
+            position: relative;
+        }
+        .nav-item.active::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: #6366f1;
+            border-radius: 2px;
+        }
+
+        /* Animation Utilities */
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+        .animate-float {
+            animation: float 6s ease-in-out infinite;
+        }
+    </style>
+</head>
+<body class="bg-dark text-slate-200 font-sans selection:bg-primary selection:text-white">
+
+    <!-- Desktop/Top Navigation -->
+    <nav class="fixed top-0 left-0 w-full z-50 glass transition-all duration-300" id="topNav">
+        <div class="container mx-auto px-6 h-16 flex justify-between items-center">
+            <a href="#" class="text-xl font-display font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary">
+                DevPortfolio
+            </a>
+            <div class="hidden md:flex space-x-8">
+                <a href="#home" class="nav-item hover:text-primary transition-colors text-sm font-medium tracking-wide">HOME</a>
+                <a href="#highlight" class="nav-item hover:text-primary transition-colors text-sm font-medium tracking-wide">HIGHLIGHTS</a>
+                <a href="#profile" class="nav-item hover:text-primary transition-colors text-sm font-medium tracking-wide">PROFILE</a>
+                <a href="#archive" class="nav-item hover:text-primary transition-colors text-sm font-medium tracking-wide">ARCHIVE</a>
+            </div>
+            <!-- Mobile Menu Button (Hamburger) - functionality simplified for POC -->
+            <button class="md:hidden text-slate-300 hover:text-white">
+                <i class="fa-solid fa-bars text-xl"></i>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Hero / Header Section -->
+    <section id="home" class="relative w-full h-screen flex items-center justify-center overflow-hidden">
+        <!-- Canvas Background -->
+        <canvas id="heroCanvas" class="absolute top-0 left-0 w-full h-full z-0"></canvas>
+        
+        <!-- Gradient Overlay -->
+        <div class="absolute top-0 left-0 w-full h-full bg-gradient-to-b from-transparent via-dark/50 to-dark z-10 pointer-events-none"></div>
+
+        <div class="relative z-20 text-center px-4 max-w-4xl mx-auto">
+            <div class="inline-block mb-4 px-4 py-1 rounded-full border border-primary/30 bg-primary/10 backdrop-blur-sm text-primary text-xs font-bold tracking-widest uppercase animate-float">
+                Welcome to my digital space
+            </div>
+            <h1 class="text-5xl md:text-7xl font-display font-bold mb-6 leading-tight">
+                From Stardust to <br>
+                <span class="bg-clip-text text-transparent bg-gradient-to-r from-blue-400 via-primary to-secondary">Consciousness</span>
+            </h1>
+            <p class="text-slate-400 text-lg md:text-xl max-w-2xl mx-auto mb-10 font-light">
+                Exploration of code, life, and the universe. Here are my proof of concepts reflecting the evolution of complex systems.
+            </p>
+            <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                <a href="#highlight" class="px-8 py-3 rounded-full bg-primary hover:bg-indigo-600 text-white font-semibold shadow-lg shadow-indigo-500/30 transition-all transform hover:-translate-y-1">
+                    Explore Work
+                </a>
+                <a href="#profile" class="px-8 py-3 rounded-full bg-surface hover:bg-slate-700 border border-slate-600 text-white font-semibold transition-all transform hover:-translate-y-1">
+                    About Me
+                </a>
+            </div>
+        </div>
+
+        <!-- Scroll Indicator -->
+        <div class="absolute bottom-10 left-1/2 transform -translate-x-1/2 z-20 animate-bounce text-slate-500">
+            <i class="fa-solid fa-chevron-down"></i>
+        </div>
+    </section>
+
+    <!-- Highlights Section -->
+    <section id="highlight" class="py-24 relative">
+        <div class="container mx-auto px-6">
+            <div class="flex items-end justify-between mb-12">
+                <div>
+                    <h2 class="text-3xl md:text-4xl font-display font-bold text-white mb-2">Highlights</h2>
+                    <p class="text-slate-400">Featured Proof of Concepts & Experiments</p>
+                </div>
+                <div class="hidden md:block w-24 h-1 bg-gradient-to-r from-primary to-transparent rounded"></div>
+            </div>
+
+            <!-- Grid Container - Populated by JS -->
+            <div id="highlight-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Content injected here -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Profile Section -->
+    <section id="profile" class="py-24 bg-surface/30 relative">
+        <!-- decorative blur -->
+        <div class="absolute top-0 right-0 w-96 h-96 bg-primary/10 rounded-full blur-3xl pointer-events-none"></div>
+
+        <div class="container mx-auto px-6 relative z-10">
+            <div class="glass-card rounded-3xl p-8 md:p-12 shadow-2xl">
+                <div class="flex flex-col md:flex-row items-center gap-12">
+                    
+                    <!-- Avatar Area -->
+                    <div class="relative shrink-0 group">
+                        <div class="w-48 h-48 rounded-full overflow-hidden border-4 border-surface shadow-2xl relative z-10">
+                            <!-- Placeholder for User Avatar -->
+                            <img src="https://ui-avatars.com/api/?name=User+Profile&background=0f172a&color=6366f1&size=256" alt="Profile" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                        </div>
+                        <!-- Orbit rings decoration -->
+                        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-56 h-56 border border-primary/30 rounded-full animate-[spin_10s_linear_infinite]"></div>
+                        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 border border-secondary/20 rounded-full animate-[spin_15s_linear_infinite_reverse]"></div>
+                    </div>
+
+                    <!-- Text Area -->
+                    <div class="flex-1 text-center md:text-left">
+                        <h2 class="text-3xl md:text-4xl font-display font-bold text-white mb-4">About the Creator</h2>
+                        <p class="text-slate-300 leading-relaxed mb-6">
+                            I am a developer fascinated by the origins of the universe and the emergence of consciousness. My work bridges the gap between raw data and organic interaction. I build Proof of Concepts to test the limits of modern web technologies, always aiming for a flexible, scalable, and beautiful design.
+                        </p>
+                        
+                        <!-- Tech Stack Chips -->
+                        <div class="flex flex-wrap justify-center md:justify-start gap-2 mb-8">
+                            <span class="px-3 py-1 rounded-full bg-slate-700/50 border border-slate-600 text-xs font-mono text-blue-300">React</span>
+                            <span class="px-3 py-1 rounded-full bg-slate-700/50 border border-slate-600 text-xs font-mono text-yellow-300">JavaScript</span>
+                            <span class="px-3 py-1 rounded-full bg-slate-700/50 border border-slate-600 text-xs font-mono text-green-300">Node.js</span>
+                            <span class="px-3 py-1 rounded-full bg-slate-700/50 border border-slate-600 text-xs font-mono text-pink-300">Three.js</span>
+                            <span class="px-3 py-1 rounded-full bg-slate-700/50 border border-slate-600 text-xs font-mono text-purple-300">AI/ML</span>
+                        </div>
+
+                        <!-- Social Links -->
+                        <div class="flex justify-center md:justify-start gap-6">
+                            <a href="#" class="text-slate-400 hover:text-white text-2xl transition-colors"><i class="fa-brands fa-github"></i></a>
+                            <a href="#" class="text-slate-400 hover:text-blue-400 text-2xl transition-colors"><i class="fa-brands fa-twitter"></i></a>
+                            <a href="#" class="text-slate-400 hover:text-pink-500 text-2xl transition-colors"><i class="fa-brands fa-instagram"></i></a>
+                            <a href="#" class="text-slate-400 hover:text-blue-600 text-2xl transition-colors"><i class="fa-brands fa-linkedin"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Archive Section -->
+    <section id="archive" class="py-24 mb-20">
+        <div class="container mx-auto px-6">
+            <h2 class="text-3xl md:text-4xl font-display font-bold text-white mb-8">The Archive</h2>
+            
+            <div class="bg-surface/50 rounded-2xl border border-slate-700 overflow-hidden">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="bg-slate-800/50 text-slate-400 text-sm uppercase tracking-wider border-b border-slate-700">
+                                <th class="p-4 font-medium">Date</th>
+                                <th class="p-4 font-medium">Project Name</th>
+                                <th class="p-4 font-medium">Category</th>
+                                <th class="p-4 font-medium text-right">Link</th>
+                            </tr>
+                        </thead>
+                        <tbody id="archive-table-body" class="divide-y divide-slate-700/50 text-slate-300">
+                            <!-- Populated by JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-dark border-t border-slate-800 py-12 mb-16 md:mb-0">
+        <div class="container mx-auto px-6 text-center">
+            <p class="text-slate-500 text-sm">&copy; 2024 GitHub Portfolio. Designed with Stardust.</p>
+        </div>
+    </footer>
+
+    <!-- Mobile Bottom Navigation (Visible only on mobile) -->
+    <nav class="md:hidden fixed bottom-4 left-4 right-4 bg-surface/90 backdrop-blur-lg border border-slate-700 rounded-2xl shadow-2xl z-50 p-2">
+        <ul class="flex justify-around items-center">
+            <li>
+                <a href="#home" class="flex flex-col items-center p-2 text-slate-400 hover:text-primary active-icon">
+                    <i class="fa-solid fa-home text-lg mb-1"></i>
+                    <span class="text-[10px]">Home</span>
+                </a>
+            </li>
+            <li>
+                <a href="#highlight" class="flex flex-col items-center p-2 text-slate-400 hover:text-primary">
+                    <i class="fa-solid fa-star text-lg mb-1"></i>
+                    <span class="text-[10px]">POCs</span>
+                </a>
+            </li>
+            <li>
+                <a href="#profile" class="flex flex-col items-center p-2 text-slate-400 hover:text-primary">
+                    <i class="fa-solid fa-user text-lg mb-1"></i>
+                    <span class="text-[10px]">Profile</span>
+                </a>
+            </li>
+            <li>
+                <a href="#archive" class="flex flex-col items-center p-2 text-slate-400 hover:text-primary">
+                    <i class="fa-solid fa-box-archive text-lg mb-1"></i>
+                    <span class="text-[10px]">Archive</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+
+    <!-- JavaScript Logic -->
+    <script>
+        // --- DATA CONFIGURATION ---
+        // EDIT HERE to add new content
+        
+        const highlightProjects = [
+            {
+                title: "Neural Network Viz",
+                desc: "A 3D visualization of neural pathways lighting up using WebGL. Represents the dawn of consciousness.",
+                tags: ["WebGL", "Three.js", "AI"],
+                image: "bg-indigo-900", // Using CSS classes for colored placeholders, can be URLs
+                link: "#"
+            },
+            {
+                title: "Cellular Automata",
+                desc: "Conway's Game of Life implementation with variable rulesets to simulate different planetary conditions.",
+                tags: ["Algorithm", "Canvas", "Simulation"],
+                image: "bg-fuchsia-900",
+                link: "#"
+            },
+            {
+                title: "Galaxy Generator",
+                desc: "Procedural generation of spiral galaxies using density wave theory equations.",
+                tags: ["Math", "Physics", "Visual"],
+                image: "bg-blue-900",
+                link: "#"
+            },
+            {
+                title: "Audio Reactive Void",
+                desc: "Microphone input converted into a visual black hole simulation.",
+                tags: ["Audio API", "React", "Interactive"],
+                image: "bg-slate-700",
+                link: "#"
+            }
+        ];
+
+        const archiveProjects = [
+            { date: "Oct 2023", name: "Old Portfolio", category: "Web Design", link: "#" },
+            { date: "Aug 2023", name: "Python Scraper", category: "Utility", link: "#" },
+            { date: "Jun 2023", name: "Unity FPS Prototype", category: "Game Dev", link: "#" },
+            { date: "Feb 2023", name: "Discord Bot", category: "Backend", link: "#" },
+            { date: "Jan 2023", name: "Fractal Tree", category: "Creative Coding", link: "#" },
+        ];
+
+
+        // --- RENDERING LOGIC ---
+
+        function renderHighlights() {
+            const grid = document.getElementById('highlight-grid');
+            grid.innerHTML = highlightProjects.map(project => `
+                <div class="group relative bg-surface border border-slate-700 rounded-2xl overflow-hidden hover:shadow-2xl hover:shadow-primary/20 transition-all duration-300 hover:-translate-y-2">
+                    <!-- Image Placeholder -->
+                    <div class="h-48 w-full ${project.image} relative overflow-hidden">
+                        <div class="absolute inset-0 bg-gradient-to-t from-surface to-transparent opacity-80"></div>
+                        <!-- Icon overlay -->
+                        <div class="absolute center inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                             <a href="${project.link}" class="px-6 py-2 bg-white text-dark font-bold rounded-full transform scale-90 group-hover:scale-100 transition-transform">View Demo</a>
+                        </div>
+                    </div>
+                    
+                    <div class="p-6">
+                        <div class="flex flex-wrap gap-2 mb-3">
+                            ${project.tags.map(tag => `<span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-slate-800 text-slate-400 border border-slate-700">${tag}</span>`).join('')}
+                        </div>
+                        <h3 class="text-xl font-bold text-white mb-2 group-hover:text-primary transition-colors">${project.title}</h3>
+                        <p class="text-slate-400 text-sm leading-relaxed mb-4">${project.desc}</p>
+                        <a href="${project.link}" class="inline-flex items-center text-primary text-sm font-semibold hover:text-secondary transition-colors">
+                            Read more <i class="fa-solid fa-arrow-right ml-2 text-xs"></i>
+                        </a>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderArchive() {
+            const tbody = document.getElementById('archive-table-body');
+            tbody.innerHTML = archiveProjects.map(item => `
+                <tr class="hover:bg-slate-700/30 transition-colors">
+                    <td class="p-4 font-mono text-xs text-slate-500">${item.date}</td>
+                    <td class="p-4 font-medium text-slate-200">${item.name}</td>
+                    <td class="p-4 text-sm text-slate-400">
+                        <span class="inline-block px-2 py-1 rounded bg-slate-800 border border-slate-700 text-xs">${item.category}</span>
+                    </td>
+                    <td class="p-4 text-right">
+                        <a href="${item.link}" class="text-slate-500 hover:text-primary transition-colors"><i class="fa-solid fa-external-link-alt"></i></a>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        // Initialize Rendering
+        renderHighlights();
+        renderArchive();
+
+
+        // --- INTERACTIVE HEADER CANVAS (Universe/Life/Consciousness) ---
+        const canvas = document.getElementById('heroCanvas');
+        const ctx = canvas.getContext('2d');
+        let width, height;
+        let particles = [];
+
+        // Configuration
+        const particleCount = 60; // Adjust for density
+        const connectionDistance = 150;
+        const mouseDistance = 200;
+
+        // Resize handling
+        function resize() {
+            width = window.innerWidth;
+            height = window.innerHeight;
+            canvas.width = width;
+            canvas.height = height;
+        }
+        window.addEventListener('resize', resize);
+        resize();
+
+        // Particle Class
+        class Particle {
+            constructor() {
+                this.x = Math.random() * width;
+                this.y = Math.random() * height;
+                this.vx = (Math.random() - 0.5) * 0.5;
+                this.vy = (Math.random() - 0.5) * 0.5;
+                this.size = Math.random() * 2 + 1;
+                // Color variation for Universe (blue/white) vs Life (pink/purple)
+                this.color = Math.random() > 0.5 ? 'rgba(99, 102, 241,' : 'rgba(236, 72, 153,'; 
+            }
+
+            update() {
+                this.x += this.vx;
+                this.y += this.vy;
+
+                // Bounce off edges
+                if (this.x < 0 || this.x > width) this.vx *= -1;
+                if (this.y < 0 || this.y > height) this.vy *= -1;
+            }
+
+            draw() {
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fillStyle = this.color + '0.8)'; // Add alpha
+                ctx.fill();
+            }
+        }
+
+        // Init Particles
+        for (let i = 0; i < particleCount; i++) {
+            particles.push(new Particle());
+        }
+
+        // Animation Loop
+        function animate() {
+            ctx.clearRect(0, 0, width, height);
+            
+            // Update and draw particles
+            particles.forEach(p => {
+                p.update();
+                p.draw();
+            });
+
+            // Draw connections (Consciousness/Neurons)
+            particles.forEach((a, index) => {
+                for (let j = index + 1; j < particles.length; j++) {
+                    const b = particles[j];
+                    const dx = a.x - b.x;
+                    const dy = a.y - b.y;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+
+                    if (distance < connectionDistance) {
+                        const opacity = 1 - (distance / connectionDistance);
+                        ctx.strokeStyle = `rgba(148, 163, 184, ${opacity * 0.2})`; // Slate-400 with low opacity
+                        ctx.lineWidth = 1;
+                        ctx.beginPath();
+                        ctx.moveTo(a.x, a.y);
+                        ctx.lineTo(b.x, b.y);
+                        ctx.stroke();
+                    }
+                }
+            });
+
+            requestAnimationFrame(animate);
+        }
+        animate();
+
+
+        // --- NAVIGATION ACTIVE STATE ---
+        // Intersection Observer to highlight nav items based on scroll
+        const sections = document.querySelectorAll('section');
+        const navLinks = document.querySelectorAll('.nav-item');
+        const mobileLinks = document.querySelectorAll('.md\\:hidden a');
+
+        const observerOptions = {
+            threshold: 0.3 // Trigger when 30% of section is visible
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const id = entry.target.getAttribute('id');
+                    
+                    // Desktop
+                    navLinks.forEach(link => {
+                        link.classList.remove('active');
+                        if (link.getAttribute('href') === `#${id}`) {
+                            link.classList.add('active');
+                        }
+                    });
+
+                    // Mobile highlight (color change)
+                    mobileLinks.forEach(link => {
+                        const icon = link.querySelector('i');
+                        const text = link.querySelector('span');
+                        icon.classList.remove('text-primary');
+                        text.classList.remove('text-primary');
+                        
+                        if (link.getAttribute('href') === `#${id}`) {
+                            icon.classList.add('text-primary');
+                            text.classList.add('text-primary');
+                        }
+                    });
+                }
+            });
+        }, observerOptions);
+
+        sections.forEach(section => {
+            observer.observe(section);
+        });
+
+    </script>
+</body>
+</html>
