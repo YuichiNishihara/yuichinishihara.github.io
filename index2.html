@@ -282,10 +282,10 @@
         
         const highlightProjects = [
             {
-                title: "Dual-Unit Weather",
+                title: "Dual-Unit Weather Forecast",
                 desc: "A weather forecast showing both Fahrenheit and Celsius together to help build a sense of Fahrenheit.",
                 tags: ["Vibe Coding", "Gemini"],
-                image: "bg-sky-900", // Using CSS classes for colored placeholders, can be URLs
+                image: "https://yuichinishihara.github.io/images/weather.jpg", // URL to Screenshot
                 link: "https://yuichinishihara.github.io/2025/weather.html"
             },
             {
@@ -312,6 +312,7 @@
         ];
 
         const archiveProjects = [
+            { date: "Dec 2025", name: "Dual-Unit Weather Forecast", category: "Web App", link: "https://yuichinishihara.github.io/2025/weather.html" },
             { date: "Oct 2023", name: "Old Portfolio", category: "Web Design", link: "#" },
             { date: "Aug 2023", name: "Python Scraper", category: "Utility", link: "#" },
             { date: "Jun 2023", name: "Unity FPS Prototype", category: "Game Dev", link: "#" },
@@ -324,13 +325,44 @@
 
         function renderHighlights() {
             const grid = document.getElementById('highlight-grid');
-            grid.innerHTML = highlightProjects.map(project => `
+            grid.innerHTML = highlightProjects.map(project => {
+                // Determine if image is URL or CSS Class
+                const isUrl = project.image.includes('/') || project.image.includes('.');
+                
+                // Background Logic: 
+                // If it's a URL, create an IMG tag with a fallback handler.
+                // If it's a CSS class, create a DIV with that class.
+                let backgroundContent = '';
+                
+                if (isUrl) {
+                    backgroundContent = `
+                        <!-- Fallback Background (Dark Slate) -->
+                        <div class="absolute inset-0 bg-slate-800 z-0"></div>
+                        <!-- Image -->
+                        <img 
+                            src="${project.image}" 
+                            alt="${project.title}" 
+                            class="w-full h-full object-cover object-top relative z-10 transition-transform duration-500 group-hover:scale-110"
+                            onerror="this.style.display='none'"
+                        >
+                    `;
+                } else {
+                    backgroundContent = `
+                        <div class="absolute inset-0 w-full h-full ${project.image} transition-transform duration-500 group-hover:scale-110"></div>
+                    `;
+                }
+
+                return `
                 <div class="group relative bg-surface border border-slate-700 rounded-2xl overflow-hidden hover:shadow-2xl hover:shadow-primary/20 transition-all duration-300 hover:-translate-y-2">
-                    <!-- Image Placeholder -->
-                    <div class="h-48 w-full ${project.image} relative overflow-hidden">
-                        <div class="absolute inset-0 bg-gradient-to-t from-surface to-transparent opacity-80"></div>
-                        <!-- Icon overlay -->
-                        <div class="absolute center inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                    <!-- Image Container -->
+                    <div class="h-48 w-full relative overflow-hidden">
+                        ${backgroundContent}
+                        
+                        <!-- Gradient Overlay -->
+                        <div class="absolute inset-0 bg-gradient-to-t from-surface to-transparent opacity-80 z-20"></div>
+                        
+                        <!-- Hover Button Overlay -->
+                        <div class="absolute z-30 center inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                              <a href="${project.link}" class="px-6 py-2 bg-white text-dark font-bold rounded-full transform scale-90 group-hover:scale-100 transition-transform">View Demo</a>
                         </div>
                     </div>
@@ -346,7 +378,7 @@
                         </a>
                     </div>
                 </div>
-            `).join('');
+            `}).join('');
         }
 
         function renderArchive() {
