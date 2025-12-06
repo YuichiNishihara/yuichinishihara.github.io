@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>Paragliding Challenge</title>
+   <style>
+       body {
+           margin: 0;
+           padding: 0;
+           display: flex;
+           justify-content: center;
+           align-items: center;
+           height: 100vh;
+           background-color: #333;
+           font-family: 'Arial', sans-serif;
+           overflow: hidden;
+       }
+       #game-container {
+           position: relative;
+           width: 90vw;
+           height: 90vh;
+           max-width: 1000px;
+           max-height: 700px;
+           box-shadow: 0 10px 20px rgba(0,0,0,0.5);
+           border-radius: 15px;
+           overflow: hidden;
+       }
+       canvas {
+           display: block;
+           width: 100%;
+           height: 100%;
+           background: linear-gradient(to bottom, #87CEEB 0%, #B0E0E6 70%, #98FB98 70%);
+       }
+       #message-overlay {
+           position: absolute;
+           top: 50%;
+           left: 50%;
+           transform: translate(-50%, -50%);
+           color: white;
+           font-size: 2.5em;
+           font-weight: bold;
+           text-align: center;
+           text-shadow: 2px 2px 8px rgba(0,0,0,0.7);
+           pointer-events: none; /* Allows clicks to pass through */
+           opacity: 0;
+           transition: opacity 0.5s ease-in-out;
+       }
+   </style>
+</head>
+<body>
+   <div id="game-container">
+       <canvas id="gameCanvas"></canvas>
+       <div id="message-overlay"></div>
+   </div>
+
+
+   <script>
+       const canvas = document.getElementById('gameCanvas');
+       const ctx = canvas.getContext('2d');
+       const messageOverlay = document.getElementById('message-overlay');
+
+
+       let canvasWidth, canvasHeight;
+
+
+       // --- Game State ---
+       const GAME_STATE = {
+           WAITING: 'WAITING',
+           RUNNING: 'RUNNING',
+           FLYING: 'FLYING',
+           FAILED: 'FAILED',
+           LANDED: 'LANDED' // Represents finishing a flight
+       };
+       let currentState = GAME_STATE.WAITING;
+
+
+       // --- Wind ---
+       const wind = {
+           direction: 0, // Angle in degrees (0 is up/headwind)
+           strength: 1, // 1, 2, or 3
+           targetDirection: 0,
+           targetStrength: 1,
+           changeInterval: 5000, // Change target every 5 seconds
+           lastChange: 0,
+           update: function() {
+               const angleDiff = (this.targetDirection - this.direction + 540) % 360 - 180;
+               this.direction += angleDiff * 0.02;
+               this.direction = (this.direction + 360) % 360;
+              
+               this.strength += (this.targetStrength - this.strength) * 0.02;
+           }
+       };
+
+
+       // --- Player ---
+       const player = {
+           x: 0,
+           y: 0,
+           runFrame: 0,
+           runSpeed: 0,
+           vy: 0, // vertical velocity for flying
+           vx: 0, // horizontal velocity for flying
+           takeoffPrimed: false, // Will takeoff be attempted this run?
+           reset: function() {
+               this.x = canvasWidth * 0.2;
+               this.y = slope.getYatX(this.x) - 30; // 30 is player height offset
+               this.runFrame = 0;
+               this.runSpeed = canvasWidth * 0.0025;
+               this.vy = 0;
+               this.vx = 0;
+               this.takeoffPrimed = false;
+           }
+       };
+
+
+       // --- Slope ---
+       const slope = {
+           points: [],
+           generate: function() {
+               this.points = [];
+               const startX = canvasWidth * 0.1;
+               const startY = canvasHeight * 0.7;
+               const endX = canvasWidth * 0.8;
+               const endY = canvasHeight * 0.95;
+               this.points.push({x: 0, y: startY});
+               this.points.push({x: startX, y: startY});
+               this.points.push({x: endX, y: endY});
+               this.points.push({x: canvasWidth, y: endY});
+           },
+           getYatX: function(x) {
+               if (!this.points || this.points.length < 3) return 0;
+               if (x < this.points[1].x) return this.points[1].y;
+               if (x > this.points[2].x) return this.points[2].y;
+               const slopePercentage = (x - this.points[1].x) / (this.points[2].x - this.points[1].x);
+               return this.points[1].y + slopePercentage * (this.points[2].y - this.points[1].y);
+           }
+       };
+
+
+       function resizeCanvas() {
+           const container = document.getElementById('game-container');
+           canvas.width = container.clientWidth;
+           canvas.height = container.clientHeight;
+           canvasWidth = canvas.width;
+           canvasHeight = canvas.height;
+          
+           slope.generate();
+           player.reset();
+       }
+
+
+       // --- Drawing Functions ---
+      
+       function drawSlope() {
+           ctx.beginPath();
+           ctx.moveTo(slope.points[0].x, slope.points[0].y);
+           for(let i = 1; i < slope.points.length; i++) {
+               ctx.lineTo(slope.points[i].x, slope.points[i].y);
+           }
+           ctx.lineTo(canvasWidth, canvasHeight);
+           ctx.lineTo(0, canvasHeight);
+           ctx.closePath();
+           ctx.fillStyle = '#228B22'; // ForestGreen
+           ctx.fill();
+       }
+      
+       function drawPlayer() {
+           ctx.save();
+           ctx.translate(player.x, player.y);
+
+
+           const headRadius = 8;
+           const bodyLength = 20;
+           const legLength = 15;
+          
+           ctx.fillStyle = '#333';
+           ctx.strokeStyle = '#333';
+           ctx.lineWidth = 3;
+
+
+           ctx.beginPath();
+           ctx.arc(0, -bodyLength - headRadius, headRadius, 0, Math.PI * 2);
+           ctx.fill();
+
+
+           ctx.beginPath();
+           ctx.moveTo(0, -bodyLength);
+           ctx.lineTo(0, 0);
+           ctx.stroke();
+
+
+           if (currentState === GAME_STATE.RUNNING) {
+               const legAngle = Math.sin(player.runFrame * 0.3) * (Math.PI / 4);
+               ctx.beginPath();
+               ctx.moveTo(0, 0);
+               ctx.lineTo(Math.sin(legAngle) * legLength, Math.cos(legAngle) * legLength);
+               ctx.moveTo(0, 0);
+               ctx.lineTo(Math.sin(-legAngle) * legLength, Math.cos(-legAngle) * legLength);
+               ctx.stroke();
+           } else if (currentState === GAME_STATE.FLYING) {
+               ctx.beginPath();
+               ctx.moveTo(0, 0);
+               ctx.lineTo(-5, legLength);
+               ctx.moveTo(0, 0);
+               ctx.lineTo(5, legLength);
+               ctx.stroke();
+           } else {
+               ctx.beginPath();
+               ctx.moveTo(0, 0);
+               ctx.lineTo(-5, legLength);
+               ctx.moveTo(0, 0);
+               ctx.lineTo(5, legLength);
+               ctx.stroke();
+           }
+
+
+           const isWindFavorableForInflation = (wind.direction < 40 || wind.direction > 320) && wind.strength >= 1.5;
+
+
+           if (currentState === GAME_STATE.FLYING || (currentState === GAME_STATE.RUNNING && isWindFavorableForInflation)) {
+               ctx.beginPath();
+               ctx.moveTo(-40, -bodyLength - 30);
+               ctx.quadraticCurveTo(0, -bodyLength - 70, 40, -bodyLength - 30);
+               ctx.fillStyle = `rgba(255, 0, 0, 0.8)`;
+               ctx.fill();
+               ctx.beginPath();
+               ctx.strokeStyle = '#333';
+               ctx.lineWidth = 1.5;
+               ctx.moveTo(-30, -bodyLength - 35);
+               ctx.lineTo(0, -bodyLength);
+               ctx.moveTo(30, -bodyLength - 35);
+               ctx.lineTo(0, -bodyLength);
+               ctx.stroke();
+           } else if (currentState === GAME_STATE.WAITING || currentState === GAME_STATE.RUNNING) {
+               ctx.beginPath();
+               ctx.moveTo(-15, legLength);
+               ctx.quadraticCurveTo(-30, legLength - 10, -45, legLength);
+               ctx.quadraticCurveTo(-55, legLength + 10, -40, legLength + 10);
+               ctx.quadraticCurveTo(-25, legLength + 5, -15, legLength);
+               ctx.fillStyle = `rgba(200, 0, 0, 0.7)`;
+               ctx.fill();
+           }
+          
+           ctx.restore();
+       }
+
+
+       function drawCompass() {
+           const compassX = canvasWidth - 70;
+           const compassY = 70;
+           const radius = 50;
+
+
+           ctx.beginPath();
+           ctx.arc(compassX, compassY, radius, 0, Math.PI * 2);
+           ctx.fillStyle = 'rgba(255, 255, 255, 0.5)';
+           ctx.fill();
+           ctx.strokeStyle = 'rgba(0, 0, 0, 0.5)';
+           ctx.lineWidth = 2;
+           ctx.stroke();
+          
+           ctx.fillStyle = '#333';
+           ctx.font = '12px Arial';
+           ctx.textAlign = 'center';
+           ctx.textBaseline = 'middle';
+           ctx.fillText('N', compassX, compassY - radius + 10);
+
+
+           ctx.save();
+           ctx.translate(compassX, compassY);
+           ctx.rotate(wind.direction * Math.PI / 180);
+
+
+           const strengthColors = ['#ccc', '#FFD700', '#FFA500', '#FF4500'];
+           const arrowLength = 15 + wind.strength * 7;
+          
+           ctx.beginPath();
+           ctx.moveTo(0, -arrowLength);
+           ctx.lineTo(8, 0);
+           ctx.lineTo(3, 0);
+           ctx.lineTo(3, arrowLength * 0.8);
+           ctx.lineTo(-3, arrowLength * 0.8);
+           ctx.lineTo(-3, 0);
+           ctx.lineTo(-8, 0);
+           ctx.closePath();
+           ctx.fillStyle = strengthColors[Math.floor(wind.strength)];
+           ctx.fill();
+           ctx.strokeStyle = '#333';
+           ctx.stroke();
+
+
+           ctx.restore();
+       }
+
+
+       function drawUI() {
+           if (currentState === GAME_STATE.WAITING) {
+               ctx.fillStyle = "rgba(0, 0, 0, 0.5)";
+               ctx.font = "24px Arial";
+               ctx.textAlign = "center";
+               ctx.fillText("Press SPACE to start running", canvasWidth / 2, canvasHeight / 2);
+           }
+          
+           ctx.fillStyle = "rgba(0, 0, 0, 0.7)";
+           ctx.font = "16px Arial";
+           ctx.textAlign = "center";
+           ctx.fillText("Takeoff: Wind within 30° of headwind (↑) and strength level 2+", canvasWidth / 2, canvasHeight - 20);
+       }
+      
+       function showMessage(text, duration = 2000) {
+           messageOverlay.textContent = text;
+           messageOverlay.style.opacity = '1';
+           if (duration > 0) {
+               setTimeout(() => {
+                   messageOverlay.style.opacity = '0';
+               }, duration);
+           }
+       }
+
+
+       // --- Game Logic ---
+       function update(timestamp) {
+           if (timestamp - wind.lastChange > wind.changeInterval) {
+               wind.targetDirection = Math.random() * 360;
+               wind.targetStrength = 1 + Math.random() * 2.5;
+               wind.lastChange = timestamp;
+           }
+          
+           wind.update();
+
+
+           switch(currentState) {
+               case GAME_STATE.RUNNING:
+                   player.x += player.runSpeed;
+                   player.y = slope.getYatX(player.x) - 30;
+                   player.runFrame++;
+
+
+                   const halfwayPoint = slope.points[1].x + (slope.points[2].x - slope.points[1].x) / 2;
+                   if (player.takeoffPrimed && player.x >= halfwayPoint) {
+                       currentState = GAME_STATE.FLYING;
+                       // Slower initial velocity for a gentler start to the flight
+                       player.vy = -0.5;
+                       player.vx = 0.2;
+                       showMessage("Takeoff!", 1500);
+                   }
+
+
+                   if (player.x > slope.points[2].x) {
+                       currentState = GAME_STATE.FAILED;
+                       showMessage("Wrong wind!", 0);
+                       setTimeout(resetGame, 3000);
+                   }
+                   break;
+              
+               case GAME_STATE.FLYING:
+                   // NEW/MODIFIED: Physics for a gentle, swaying, upward drift.
+                  
+                   // Add random sideways movement for a gentle drift
+                   player.vx += (Math.random() - 0.5) * 0.1;
+
+
+                   // Apply some damping to prevent sideways speed from getting out of control
+                   player.vx *= 0.99;
+                  
+                   // Apply a constant, gentle upward lift
+                   player.y -= 0.4;
+
+
+                   // Apply horizontal velocity
+                   player.x += player.vx;
+
+
+                   // Keep the player within the horizontal bounds of the screen for a while
+                   if (player.x < 20 && player.vx < 0) {
+                       player.vx *= -0.5; // Bounce off the left edge gently
+                   }
+                   if (player.x > canvasWidth - 20 && player.vx > 0) {
+                       player.x = canvasWidth - 20;
+                       player.vx *= -0.5; // Bounce off the right edge gently
+                   }
+
+
+                   // End condition is now just flying off the top of the screen
+                   if (player.y < -100) {
+                        currentState = GAME_STATE.LANDED;
+                        showMessage("Floated Away...", 0);
+                        setTimeout(resetGame, 3000);
+                   }
+                   break;
+           }
+       }
+
+
+       function gameLoop(timestamp) {
+           update(timestamp);
+
+
+           ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+           const gradient = ctx.createLinearGradient(0, 0, 0, canvasHeight);
+           gradient.addColorStop(0, '#87CEEB');
+           gradient.addColorStop(0.7, '#B0E0E6');
+           ctx.fillStyle = gradient;
+           ctx.fillRect(0, 0, canvasWidth, canvasHeight * 0.7);
+
+
+           drawSlope();
+           drawPlayer();
+           drawCompass();
+           drawUI();
+          
+           requestAnimationFrame(gameLoop);
+       }
+
+
+       function handleKeyPress(e) {
+           if (e.code === 'Space' && currentState === GAME_STATE.WAITING) {
+               const isHeadwind = wind.direction < 30 || wind.direction > 330;
+               if (isHeadwind && wind.strength >= 2) {
+                   player.takeoffPrimed = true;
+               } else {
+                   player.takeoffPrimed = false;
+               }
+               currentState = GAME_STATE.RUNNING;
+           }
+       }
+
+
+       function resetGame() {
+           player.reset();
+           currentState = GAME_STATE.WAITING;
+           messageOverlay.style.opacity = '0';
+       }
+
+
+       // --- Initialization ---
+       window.addEventListener('resize', resizeCanvas);
+       window.addEventListener('keydown', handleKeyPress);
+
+
+       resizeCanvas();
+       resetGame();
+       requestAnimationFrame(gameLoop);
+   </script>
+</body>
+</html>
+
+
+
+
