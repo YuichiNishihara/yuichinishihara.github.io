@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dr. Noah's Adventure | Yuichi Nishihara</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        display: ['Space Grotesk', 'sans-serif'],
+                    },
+                    colors: {
+                        primary: '#6366f1', // Indigo 500
+                        secondary: '#ec4899', // Pink 500
+                        dark: '#0f172a', // Slate 900
+                        surface: '#1e293b', // Slate 800
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0f172a;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #334155;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #475569;
+        }
+
+        /* Glassmorphism Utilities */
+        .glass {
+            background: rgba(15, 23, 42, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+    </style>
+</head>
+<body class="bg-dark text-slate-200 font-sans selection:bg-primary selection:text-white flex flex-col min-h-screen">
+
+    <nav class="fixed top-0 left-0 w-full z-50 glass transition-all duration-300" id="topNav">
+        <div class="container mx-auto px-6 h-16 flex justify-between items-center">
+            <a href="https://yuichinishihara.github.io/index.html" class="text-xl font-display font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary">
+                Yuichi Nishihara's Playground
+            </a>
+            <div class="hidden md:flex space-x-8">
+                <a href="https://yuichinishihara.github.io/#home" class="nav-item hover:text-primary transition-colors text-sm font-medium tracking-wide">HOME</a>
+                <a href="https://yuichinishihara.github.io/#highlight" class="nav-item hover:text-primary transition-colors text-sm font-medium tracking-wide">HIGHLIGHTS</a>
+                <a href="https://yuichinishihara.github.io/#profile" class="nav-item hover:text-primary transition-colors text-sm font-medium tracking-wide">PROFILE</a>
+                <a href="https://yuichinishihara.github.io/#archive" class="nav-item hover:text-primary transition-colors text-sm font-medium tracking-wide">ARCHIVE</a>
+            </div>
+            <button class="md:hidden text-slate-300 hover:text-white">
+                <i class="fa-solid fa-bars text-xl"></i>
+            </button>
+        </div>
+    </nav>
+
+    <main class="flex-grow pt-24 pb-12">
+        <div class="container mx-auto px-6 max-w-4xl">
+            
+            <div class="mb-6 text-sm text-slate-400">
+                <a href="https://yuichinishihara.github.io/index.html" class="hover:text-primary transition-colors">Home</a> 
+                <span class="mx-2">/</span>
+                <span class="text-slate-200">Dr. Noah's Adventure</span>
+            </div>
+
+            <div class="mb-8 border-b border-slate-700 pb-8">
+                <div class="flex flex-wrap gap-2 mb-4">
+                    <span class="px-3 py-1 rounded-full bg-slate-800 border border-slate-700 text-xs font-mono text-purple-300">Comic Series</span>
+                    <span class="px-3 py-1 rounded-full bg-slate-800 border border-slate-700 text-xs font-mono text-blue-300">Sci-Fi</span>
+                </div>
+                <h1 class="text-3xl md:text-5xl font-display font-bold text-white mb-4">Dr. Noah's Adventure</h1>
+                <p class="text-xl text-slate-400 leading-relaxed">
+                    Follow Dr. Noah as he uncovers the secrets of the universe, one mishap at a time.
+                </p>
+            </div>
+
+            <div class="flex flex-col sm:flex-row justify-between items-center gap-4 mb-8 bg-surface/50 p-4 rounded-xl border border-slate-700">
+                
+                <div class="w-full sm:w-auto">
+                    <label for="episode-select" class="sr-only">Jump to Episode</label>
+                    <select id="episode-select" class="w-full sm:w-64 bg-dark border border-slate-600 text-slate-200 text-sm rounded-lg focus:ring-primary focus:border-primary block p-2.5">
+                        <option selected disabled>Jump to Episode...</option>
+                        </select>
+                </div>
+
+                <div class="flex items-center gap-6">
+                    <button id="lang-toggle" class="flex items-center gap-2 text-sm font-medium text-slate-300 hover:text-white transition-colors">
+                        <i class="fa-solid fa-language text-lg"></i>
+                        <span id="lang-label">English</span>
+                    </button>
+
+                    <div class="h-4 w-px bg-slate-600 hidden sm:block"></div>
+
+                    <button id="sort-toggle" class="flex items-center gap-2 text-sm font-medium text-slate-300 hover:text-white transition-colors">
+                        <span id="sort-label">Newest First</span>
+                        <i id="sort-icon" class="fa-solid fa-arrow-down-wide-short"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div id="episodes-container" class="space-y-12">
+                </div>
+
+            <div class="mt-16 text-center">
+                <a href="https://yuichinishihara.github.io/#highlight" class="inline-flex items-center px-8 py-3 rounded-full bg-slate-800 hover:bg-slate-700 border border-slate-700 text-white font-semibold transition-all hover:-translate-y-1">
