@@ -5,13 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dr. Noah's Adventure | Yuichi Nishihara</title>
     
-    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     
-    <!-- Google Fonts: Inter and Space Grotesk -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
     
-    <!-- FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <script>
@@ -60,7 +57,6 @@
 </head>
 <body class="bg-dark text-slate-200 font-sans selection:bg-primary selection:text-white flex flex-col min-h-screen">
 
-    <!-- Desktop/Top Navigation -->
     <nav class="fixed top-0 left-0 w-full z-50 glass transition-all duration-300" id="topNav">
         <div class="container mx-auto px-6 h-16 flex justify-between items-center">
             <a href="https://yuichinishihara.github.io/index.html" class="text-xl font-display font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary">
@@ -72,25 +68,21 @@
                 <a href="https://yuichinishihara.github.io/#profile" class="nav-item hover:text-primary transition-colors text-sm font-medium tracking-wide">PROFILE</a>
                 <a href="https://yuichinishihara.github.io/#archive" class="nav-item hover:text-primary transition-colors text-sm font-medium tracking-wide">ARCHIVE</a>
             </div>
-            <!-- Mobile Menu Button (Hamburger) -->
             <button class="md:hidden text-slate-300 hover:text-white">
                 <i class="fa-solid fa-bars text-xl"></i>
             </button>
         </div>
     </nav>
 
-    <!-- Main Content Area -->
     <main class="flex-grow pt-24 pb-12">
         <div class="container mx-auto px-6 max-w-4xl">
             
-            <!-- Breadcrumbs -->
             <div class="mb-6 text-sm text-slate-400">
                 <a href="https://yuichinishihara.github.io/index.html" class="hover:text-primary transition-colors">Home</a> 
                 <span class="mx-2">/</span>
                 <span class="text-slate-200">Dr. Noah's Adventure</span>
             </div>
 
-            <!-- Title Header -->
             <div class="mb-8 border-b border-slate-700 pb-8">
                 <div class="flex flex-wrap gap-2 mb-4">
                     <span class="px-3 py-1 rounded-full bg-slate-800 border border-slate-700 text-xs font-mono text-purple-300">Comic Series</span>
@@ -102,31 +94,33 @@
                 </p>
             </div>
 
-            <!-- Controls: Sort and Jump -->
             <div class="flex flex-col sm:flex-row justify-between items-center gap-4 mb-8 bg-surface/50 p-4 rounded-xl border border-slate-700">
                 
-                <!-- Jump to Episode -->
                 <div class="w-full sm:w-auto">
                     <label for="episode-select" class="sr-only">Jump to Episode</label>
                     <select id="episode-select" class="w-full sm:w-64 bg-dark border border-slate-600 text-slate-200 text-sm rounded-lg focus:ring-primary focus:border-primary block p-2.5">
                         <option selected disabled>Jump to Episode...</option>
-                        <!-- Populated by JS -->
-                    </select>
+                        </select>
                 </div>
 
-                <!-- Sort Toggle -->
-                <button id="sort-toggle" class="flex items-center gap-2 text-sm font-medium text-slate-300 hover:text-white transition-colors">
-                    <span id="sort-label">Newest First</span>
-                    <i id="sort-icon" class="fa-solid fa-arrow-down-wide-short"></i>
-                </button>
+                <div class="flex items-center gap-6">
+                    <button id="lang-toggle" class="flex items-center gap-2 text-sm font-medium text-slate-300 hover:text-white transition-colors">
+                        <i class="fa-solid fa-language text-lg"></i>
+                        <span id="lang-label">English</span>
+                    </button>
+
+                    <div class="h-4 w-px bg-slate-600 hidden sm:block"></div>
+
+                    <button id="sort-toggle" class="flex items-center gap-2 text-sm font-medium text-slate-300 hover:text-white transition-colors">
+                        <span id="sort-label">Newest First</span>
+                        <i id="sort-icon" class="fa-solid fa-arrow-down-wide-short"></i>
+                    </button>
+                </div>
             </div>
 
-            <!-- Episodes Container -->
             <div id="episodes-container" class="space-y-12">
-                <!-- Episodes injected here -->
-            </div>
+                </div>
 
-            <!-- Back Button -->
             <div class="mt-16 text-center">
                 <a href="https://yuichinishihara.github.io/#highlight" class="inline-flex items-center px-8 py-3 rounded-full bg-slate-800 hover:bg-slate-700 border border-slate-700 text-white font-semibold transition-all hover:-translate-y-1">
                     <i class="fa-solid fa-arrow-left mr-2"></i> Back to Highlights
@@ -136,14 +130,12 @@
         </div>
     </main>
 
-    <!-- Footer -->
     <footer class="bg-dark border-t border-slate-800 py-12">
         <div class="container mx-auto px-6 text-center">
             <p class="text-slate-500 text-sm">&copy; 2024 GitHub Portfolio. Designed with Stardust.</p>
         </div>
     </footer>
 
-    <!-- Mobile Bottom Navigation -->
     <nav class="md:hidden fixed bottom-4 left-4 right-4 bg-surface/90 backdrop-blur-lg border border-slate-700 rounded-2xl shadow-2xl z-50 p-2">
         <ul class="flex justify-around items-center">
             <li>
@@ -173,123 +165,168 @@
         </ul>
     </nav>
 
-    <!-- JS Logic -->
     <script>
-        // --- COMIC DATA ---
-        // Add new episodes here
-        const episodes = [
-            {
-                id: 1,
-                title: "Episode 1: The Escape",
-                date: "Dec 1, 2025",
-                image: "https://yuichinishihara.github.io/Noah/noah_ep_01.png"
-            },
-            {
-                id: 2,
-                title: "Episode 2: Awakening",
-                date: "Dec 24, 2025",
-                image: "https://yuichinishihara.github.io/Noah/noah_ep_02.png"
-            }
-            // Future episodes: { id: 2, title: "Episode 2...", date: "...", image: "..." }
-        ];
+        document.addEventListener('DOMContentLoaded', function() {
+            // --- COMIC DATA ---
+            const episodes = [
+                {
+                    id: 1,
+                    title_en: "Episode 1: The Escape",
+                    title_jp: "第１話：脱出",
+                    date: "Dec 1, 2025",
+                    image: "https://yuichinishihara.github.io/Noah/noah_ep_01.png"
+                },
+                {
+                    id: 2,
+                    title_en: "Episode 2: Awakening",
+                    title_jp: "第２話：目覚め",
+                    date: "Dec 24, 2025",
+                    image: "https://yuichinishihara.github.io/Noah/noah_ep_02.png"
+                },
+                {
+                    id: 3,
+                    title_en: "Episode 3: Virtual Reality",
+                    title_jp: "第３話：仮想空間",
+                    date: "Jan 24, 2026",
+                    image: "https://yuichinishihara.github.io/Noah/noah_ep_03.png"
+                }
+            ];
 
-        // State
-        let isNewestFirst = true;
+            // State
+            let isNewestFirst = true;
+            let currentLang = 'en'; // 'en' or 'jp'
 
-        // DOM Elements
-        const container = document.getElementById('episodes-container');
-        const select = document.getElementById('episode-select');
-        const sortBtn = document.getElementById('sort-toggle');
-        const sortLabel = document.getElementById('sort-label');
-        const sortIcon = document.getElementById('sort-icon');
-
-        // Functions
-        function renderEpisodes() {
-            container.innerHTML = '';
+            // DOM Elements
+            const container = document.getElementById('episodes-container');
+            const select = document.getElementById('episode-select');
             
-            // Sort data based on state
-            const sortedEpisodes = [...episodes].sort((a, b) => {
-                return isNewestFirst ? b.id - a.id : a.id - b.id;
-            });
+            // Sort Elements
+            const sortBtn = document.getElementById('sort-toggle');
+            const sortLabel = document.getElementById('sort-label');
+            const sortIcon = document.getElementById('sort-icon');
 
-            sortedEpisodes.forEach(ep => {
-                const article = document.createElement('article');
-                article.id = `ep-${ep.id}`;
-                article.className = "bg-surface rounded-2xl border border-slate-700 overflow-hidden shadow-xl";
+            // Lang Elements
+            const langBtn = document.getElementById('lang-toggle');
+            const langLabel = document.getElementById('lang-label');
+
+            // Helper to get title based on current language
+            function getTitle(ep) {
+                return currentLang === 'jp' ? ep.title_jp : ep.title_en;
+            }
+
+            // Functions
+            function renderEpisodes() {
+                if (!container) return; // Safety check
+                container.innerHTML = '';
                 
-                article.innerHTML = `
-                    <div class="p-4 md:p-6 border-b border-slate-700/50 flex justify-between items-center bg-slate-800/30">
-                        <h2 class="text-lg md:text-xl font-bold text-white">${ep.title}</h2>
-                        <span class="text-xs font-mono text-slate-400">${ep.date}</span>
-                    </div>
-                    <div class="p-2 md:p-4">
-                        <img 
-                            src="${ep.image}" 
-                            alt="${ep.title}" 
-                            class="w-full h-auto rounded-lg"
-                            loading="lazy"
-                            onerror="this.src='https://via.placeholder.com/800x600/1e293b/475569?text=Image+Load+Error'"
-                        >
-                    </div>
-                `;
-                container.appendChild(article);
-            });
-        }
+                // Sort data based on state
+                const sortedEpisodes = [...episodes].sort((a, b) => {
+                    return isNewestFirst ? b.id - a.id : a.id - b.id;
+                });
 
-        function populateJumpSelect() {
-            // Dropdown always shows in numerical order (Episode 1, 2, 3...) for clarity
-            const orderedList = [...episodes].sort((a, b) => a.id - b.id);
-            
-            orderedList.forEach(ep => {
-                const option = document.createElement('option');
-                option.value = `ep-${ep.id}`;
-                option.textContent = ep.title;
-                select.appendChild(option);
-            });
-        }
+                sortedEpisodes.forEach(ep => {
+                    const article = document.createElement('article');
+                    article.id = `ep-${ep.id}`;
+                    article.className = "bg-surface rounded-2xl border border-slate-700 overflow-hidden shadow-xl";
+                    
+                    // Determine Image Source based on Language
+                    let imageSrc = ep.image;
+                    if (currentLang === 'jp') {
+                        imageSrc = imageSrc.replace('.png', '_jp.png');
+                    }
 
-        function toggleSort() {
-            isNewestFirst = !isNewestFirst;
-            
-            // Update UI
-            if (isNewestFirst) {
-                sortLabel.textContent = "Newest First";
-                sortIcon.className = "fa-solid fa-arrow-down-wide-short";
-            } else {
-                sortLabel.textContent = "Oldest First";
-                sortIcon.className = "fa-solid fa-arrow-up-wide-short";
-            }
+                    // Get Correct Title
+                    const displayTitle = getTitle(ep);
 
-            renderEpisodes();
-        }
-
-        function jumpToEpisode(e) {
-            const targetId = e.target.value;
-            const element = document.getElementById(targetId);
-            if (element) {
-                // Smooth scroll to element with offset for fixed header
-                const headerOffset = 100;
-                const elementPosition = element.getBoundingClientRect().top;
-                const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
-
-                window.scrollTo({
-                    top: offsetPosition,
-                    behavior: "smooth"
+                    article.innerHTML = `
+                        <div class="p-4 md:p-6 border-b border-slate-700/50 flex justify-between items-center bg-slate-800/30">
+                            <h2 class="text-lg md:text-xl font-bold text-white">${displayTitle}</h2>
+                            <span class="text-xs font-mono text-slate-400">${ep.date}</span>
+                        </div>
+                        <div class="p-2 md:p-4">
+                            <img 
+                                src="${imageSrc}" 
+                                alt="${displayTitle}" 
+                                class="w-full h-auto rounded-lg"
+                                loading="lazy"
+                                onerror="this.src='https://via.placeholder.com/800x600/1e293b/475569?text=Image+Load+Error'"
+                            >
+                        </div>
+                    `;
+                    container.appendChild(article);
                 });
             }
-            // Reset selection so you can jump to the same one again if needed (though unlikely)
-            e.target.selectedIndex = 0; 
-        }
 
-        // Event Listeners
-        sortBtn.addEventListener('click', toggleSort);
-        select.addEventListener('change', jumpToEpisode);
+            function populateJumpSelect() {
+                if (!select) return; // Safety check
+                
+                // Clear existing options except the first placeholder
+                select.innerHTML = '<option selected disabled>Jump to Episode...</option>';
 
-        // Init
-        renderEpisodes();
-        populateJumpSelect();
+                const orderedList = [...episodes].sort((a, b) => a.id - b.id);
+                
+                orderedList.forEach(ep => {
+                    const option = document.createElement('option');
+                    option.value = `ep-${ep.id}`;
+                    option.textContent = getTitle(ep); // Use the localized title
+                    select.appendChild(option);
+                });
+            }
 
+            function toggleSort() {
+                isNewestFirst = !isNewestFirst;
+                
+                if (isNewestFirst) {
+                    sortLabel.textContent = "Newest First";
+                    sortIcon.className = "fa-solid fa-arrow-down-wide-short";
+                } else {
+                    sortLabel.textContent = "Oldest First";
+                    sortIcon.className = "fa-solid fa-arrow-up-wide-short";
+                }
+
+                renderEpisodes();
+            }
+
+            function toggleLanguage() {
+                if (currentLang === 'en') {
+                    currentLang = 'jp';
+                    langLabel.textContent = "Japanese";
+                } else {
+                    currentLang = 'en';
+                    langLabel.textContent = "English";
+                }
+                
+                // Re-render episodes AND re-populate the dropdown so it matches the language
+                renderEpisodes();
+                populateJumpSelect();
+            }
+
+            function jumpToEpisode(e) {
+                const targetId = e.target.value;
+                const element = document.getElementById(targetId);
+                if (element) {
+                    const headerOffset = 100;
+                    const elementPosition = element.getBoundingClientRect().top;
+                    const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+
+                    window.scrollTo({
+                        top: offsetPosition,
+                        behavior: "smooth"
+                    });
+                }
+                e.target.selectedIndex = 0; 
+            }
+
+            // Event Listeners
+            if (sortBtn) sortBtn.addEventListener('click', toggleSort);
+            if (langBtn) langBtn.addEventListener('click', toggleLanguage);
+            if (select) select.addEventListener('change', jumpToEpisode);
+
+            // Init
+            console.log("Initializing Comics...");
+            renderEpisodes();
+            populateJumpSelect();
+        });
     </script>
-
 </body>
 </html>
