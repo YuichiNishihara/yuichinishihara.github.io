@@ -171,19 +171,22 @@
             const episodes = [
                 {
                     id: 1,
-                    title: "Episode 1: The Escape",
+                    title_en: "Episode 1: The Escape",
+                    title_jp: "第１話：脱出",
                     date: "Dec 1, 2025",
                     image: "https://yuichinishihara.github.io/Noah/noah_ep_01.png"
                 },
                 {
                     id: 2,
-                    title: "Episode 2: Awakening",
+                    title_en: "Episode 2: Awakening",
+                    title_jp: "第２話：目覚め",
                     date: "Dec 24, 2025",
                     image: "https://yuichinishihara.github.io/Noah/noah_ep_02.png"
                 },
                 {
                     id: 3,
-                    title: "Episode 3: The Discovery",
+                    title_en: "Episode 3: Virtual Reality",
+                    title_jp: "第３話：仮想空間",
                     date: "Jan 15, 2026",
                     image: "https://yuichinishihara.github.io/Noah/noah_ep_03.png"
                 }
@@ -206,6 +209,11 @@
             const langBtn = document.getElementById('lang-toggle');
             const langLabel = document.getElementById('lang-label');
 
+            // Helper to get title based on current language
+            function getTitle(ep) {
+                return currentLang === 'jp' ? ep.title_jp : ep.title_en;
+            }
+
             // Functions
             function renderEpisodes() {
                 if (!container) return; // Safety check
@@ -227,15 +235,18 @@
                         imageSrc = imageSrc.replace('.png', '_jp.png');
                     }
 
+                    // Get Correct Title
+                    const displayTitle = getTitle(ep);
+
                     article.innerHTML = `
                         <div class="p-4 md:p-6 border-b border-slate-700/50 flex justify-between items-center bg-slate-800/30">
-                            <h2 class="text-lg md:text-xl font-bold text-white">${ep.title}</h2>
+                            <h2 class="text-lg md:text-xl font-bold text-white">${displayTitle}</h2>
                             <span class="text-xs font-mono text-slate-400">${ep.date}</span>
                         </div>
                         <div class="p-2 md:p-4">
                             <img 
                                 src="${imageSrc}" 
-                                alt="${ep.title} (${currentLang.toUpperCase()})" 
+                                alt="${displayTitle}" 
                                 class="w-full h-auto rounded-lg"
                                 loading="lazy"
                                 onerror="this.src='https://via.placeholder.com/800x600/1e293b/475569?text=Image+Load+Error'"
@@ -248,12 +259,16 @@
 
             function populateJumpSelect() {
                 if (!select) return; // Safety check
+                
+                // Clear existing options except the first placeholder
+                select.innerHTML = '<option selected disabled>Jump to Episode...</option>';
+
                 const orderedList = [...episodes].sort((a, b) => a.id - b.id);
                 
                 orderedList.forEach(ep => {
                     const option = document.createElement('option');
                     option.value = `ep-${ep.id}`;
-                    option.textContent = ep.title;
+                    option.textContent = getTitle(ep); // Use the localized title
                     select.appendChild(option);
                 });
             }
@@ -280,7 +295,10 @@
                     currentLang = 'en';
                     langLabel.textContent = "English";
                 }
+                
+                // Re-render episodes AND re-populate the dropdown so it matches the language
                 renderEpisodes();
+                populateJumpSelect();
             }
 
             function jumpToEpisode(e) {
